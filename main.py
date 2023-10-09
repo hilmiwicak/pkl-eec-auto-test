@@ -36,7 +36,7 @@ class eec_authentication_login(unittest.TestCase):
 
     # @unittest.skip # type: ignore #no reason needed
     def test_login(self):
-        self.driver.get(constant.BASE_URL)
+        self.driver.get(constant.BASE_URL + "/home")
         self.driver.find_element(
             By.CSS_SELECTOR, "input.form-control[type='email']").send_keys("admin@eecid.com")
         self.driver.find_element(
@@ -46,8 +46,8 @@ class eec_authentication_login(unittest.TestCase):
 
         # assert the next page have the word "Dashboard admin"
         cur_url = self.driver.current_url
-        # self.assertEqual(cur_url, constant.BASE_URL + "/home")
-        self.assertEqual(cur_url, constant.BASE_URL + "/")
+        self.assertEqual(cur_url, constant.BASE_URL + "/home")
+        # self.assertEqual(cur_url, constant.BASE_URL + "/")
 
     def tearDown(self):
         self.driver.close()
@@ -207,7 +207,7 @@ class eec_admin_expert_management(unittest.TestCase):
         tr = self.driver.find_elements(By.CSS_SELECTOR, "tr")
         self.assertGreater(len(tr), 1)
 
-    def test_expert_edit_name(self):
+    def test_expert_edit(self):
         self.driver.get(constant.BASE_URL + "/home")
         self.driver.find_element(
             By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/expertManagement']").click()
@@ -220,9 +220,11 @@ class eec_admin_expert_management(unittest.TestCase):
         name_input_element.send_keys(Keys.CONTROL, 'a')
         name_input_element.send_keys(Keys.DELETE)
         name_input_element.send_keys("Test Name")
-        # name_input_element = self.driver.find_element(
-        #     By.CSS_SELECTOR, "#name")
-        # ActionChains(self.driver).send_keys_to_element(name_input_element, )
+
+        nip_input_element = self.driver.find_element(
+            By.CSS_SELECTOR, "#nip")
+        nip_input_element.send_keys(Keys.BACKSPACE)
+        nip_input_element.send_keys("1")
 
         self.driver.find_element(
             By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']").click()
@@ -232,6 +234,20 @@ class eec_admin_expert_management(unittest.TestCase):
         self.assertEqual(self.driver.find_element(
             By.CSS_SELECTOR, "span[data-notify='message']").text, "Data Updated!")
 
+    def test_expert_delete(self):
+        self.driver.get(constant.BASE_URL + "/home")
+        self.driver.find_element(
+            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/expertManagement']").click()
+        time.sleep(1)
+        self.driver.find_element(
+            By.CSS_SELECTOR, "button.btn.btn-danger").click()
+        time.sleep(1)
+        self.driver.switch_to.alert.accept()
+
+        time.sleep(5)
+        self.assertEqual(self.driver.find_element(
+            By.CSS_SELECTOR, "span[data-notify='message']").text, "Data Deleted!")
+
     def tearDown(self):
         self.driver.close()
 
@@ -239,12 +255,16 @@ class eec_admin_expert_management(unittest.TestCase):
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(eec_authentication_login("test_login"))
+
     # suite.addTest(eec_admin_account_management("test_account_verify"))
     # suite.addTest(eec_admin_account_management("test_account_delete"))
+
     # suite.addTest(eec_admin_expert_management("test_expert_add_not_eec"))
     # suite.addTest(eec_admin_expert_management("test_expert_add_eec"))
     # suite.addTest(eec_admin_expert_management("test_expert_view"))
-    suite.addTest(eec_admin_expert_management("test_expert_edit_name"))
+    # suite.addTest(eec_admin_expert_management("test_expert_edit"))
+    suite.addTest(eec_admin_expert_management("test_expert_delete"))
+
     suite.addTest(eec_authentication_logout("test_logout"))
     return suite
 
