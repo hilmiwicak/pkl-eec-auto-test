@@ -150,6 +150,15 @@ class eec_admin_expert_management(unittest.TestCase):
         self.driver = webdriver.Chrome(options=chrome_opt, service=service_obj)
         self.driver.implicitly_wait(5)
 
+    def test_expert_view(self):
+        self.driver.get(constant.BASE_URL + "/home")
+        self.driver.find_element(
+            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/expertManagement']").click()
+        time.sleep(1)
+
+        tr = self.driver.find_elements(By.CSS_SELECTOR, "tr")
+        self.assertGreater(len(tr), 1)
+
     def test_expert_add_not_eec(self):
         self.driver.get(constant.BASE_URL + "/home")
         self.driver.find_element(
@@ -198,15 +207,6 @@ class eec_admin_expert_management(unittest.TestCase):
             By.CSS_SELECTOR, "span[data-notify='message']").text
         self.assertEqual(message, "Data Created!")
 
-    def test_expert_view(self):
-        self.driver.get(constant.BASE_URL + "/home")
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/expertManagement']").click()
-        time.sleep(1)
-
-        tr = self.driver.find_elements(By.CSS_SELECTOR, "tr")
-        self.assertGreater(len(tr), 1)
-
     def test_expert_edit(self):
         self.driver.get(constant.BASE_URL + "/home")
         self.driver.find_element(
@@ -252,6 +252,33 @@ class eec_admin_expert_management(unittest.TestCase):
         self.driver.close()
 
 
+class eec_admin_distribution_management(unittest.TestCase):
+
+    def setUp(self):
+        service_obj = Service(constant.DRIVER_PATH)
+        chrome_opt = Options()
+        chrome_opt.binary_location = constant.CHROME_PATH
+        chrome_opt.add_argument(constant.CHROME_DATA)
+        chrome_opt.add_argument("--ignore-gpu-blocklist")
+        chrome_opt.add_experimental_option(
+            'excludeSwitches', ['enable-logging'])
+
+        self.driver = webdriver.Chrome(options=chrome_opt, service=service_obj)
+        self.driver.implicitly_wait(5)
+
+    def test_distribution_view(self):
+        self.driver.get(constant.BASE_URL + "/home")
+        self.driver.find_element(
+            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/distribution']").click()
+        time.sleep(1)
+        self.driver.find_element(
+            By.CSS_SELECTOR, "a.btn.btn-info").click()
+        time.sleep(1)
+
+        tr = self.driver.find_elements(By.CSS_SELECTOR, "tr")
+        self.assertGreater(len(tr), 1)
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(eec_authentication_login("test_login"))
@@ -263,7 +290,9 @@ def suite():
     # suite.addTest(eec_admin_expert_management("test_expert_add_eec"))
     # suite.addTest(eec_admin_expert_management("test_expert_view"))
     # suite.addTest(eec_admin_expert_management("test_expert_edit"))
-    suite.addTest(eec_admin_expert_management("test_expert_delete"))
+    # suite.addTest(eec_admin_expert_management("test_expert_delete"))
+
+    suite.addTest(eec_admin_distribution_management("test_distribution_view"))
 
     suite.addTest(eec_authentication_logout("test_logout"))
     return suite
