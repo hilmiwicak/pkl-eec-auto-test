@@ -251,6 +251,34 @@ class eec_admin_expert_management(unittest.TestCase):
         self.driver.close()
 
 
+class eec_admin_site_radar_management(unittest.TestCase):
+
+    def setUp(self):
+        service_obj = Service(constant.DRIVER_PATH)
+        chrome_opt = Options()
+        chrome_opt.binary_location = constant.CHROME_PATH
+        chrome_opt.add_argument(constant.CHROME_DATA)
+        chrome_opt.add_argument("--ignore-gpu-blocklist")
+        chrome_opt.add_experimental_option(
+            'excludeSwitches', ['enable-logging'])
+
+        self.driver = webdriver.Chrome(options=chrome_opt, service=service_obj)
+        self.driver.implicitly_wait(5)
+
+    def test_site_view(self):
+        self.driver.get(constant.BASE_URL + "/home")
+        self.driver.find_element(
+            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/site']").click()
+        time.sleep(1)
+
+        card_list = self.driver.find_elements(
+            By.CSS_SELECTOR, ".row .col-lg-4.col-md-6.col-sm-6")
+        self.assertGreater(len(card_list), 0)
+
+    def tearDown(self):
+        self.driver.close
+
+
 class eec_admin_distribution_management(unittest.TestCase):
 
     def setUp(self):
@@ -365,11 +393,13 @@ def suite():
     # suite.addTest(eec_admin_expert_management("test_expert_edit"))
     # suite.addTest(eec_admin_expert_management("test_expert_delete"))
 
+    suite.addTest(eec_admin_site_radar_management("test_site_view"))
+
     # suite.addTest(eec_admin_distribution_management("test_distribution_view"))
     # suite.addTest(eec_admin_distribution_management("test_distribution_add"))
     # suite.addTest(eec_admin_distribution_management("test_distribution_edit"))
-    suite.addTest(eec_admin_distribution_management(
-        "test_distribution_delete"))
+    # suite.addTest(eec_admin_distribution_management(
+    #     "test_distribution_delete"))
 
     suite.addTest(eec_authentication_logout("test_logout"))
     return suite
