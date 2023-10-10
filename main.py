@@ -10,7 +10,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver import Keys
-from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support.select import Select
 
 
 def ignore_warning():
@@ -81,7 +81,7 @@ class eec_authentication_logout(unittest.TestCase):
     def tearDown(self):
         self.driver.delete_cookie("eecid_session")
         self.driver.delete_cookie("XSRF-TOKEN")
-        self.driver.close()
+        self.driver.quit()
 
 
 class eec_admin_account_management(unittest.TestCase):
@@ -275,8 +275,37 @@ class eec_admin_site_radar_management(unittest.TestCase):
             By.CSS_SELECTOR, ".row .col-lg-4.col-md-6.col-sm-6")
         self.assertGreater(len(card_list), 0)
 
+    def test_site_add(self):
+        self.driver.get(constant.BASE_URL + "/home")
+        self.driver.find_element(
+            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/site']").click()
+        time.sleep(1)
+        self.driver.find_element(
+            By.CSS_SELECTOR, "a.btn-primary").click()
+        time.sleep(1)
+        self.driver.find_element(
+            By.ID, "radar_name").send_keys("Test Radar Site")
+        self.driver.find_element(
+            By.ID, "station_id").send_keys("Test Location")
+        self.driver.find_element(By.ID, "image").send_keys(
+            r"C:\Users\Hilmi\dev-projects\skripsi-selenium\skripsi-src\resources\radar.jpeg")
+
+        stock_site_element = self.driver.find_element(
+            By.CSS_SELECTOR, "select.form-control.site")
+        stock_site_select = Select(stock_site_element)
+        stock_site_select.select_by_index(1)
+
+        self.driver.find_element(
+            By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']").click()
+        self.driver.switch_to.alert.accept()
+
+        time.sleep(5)
+        message = self.driver.find_element(
+            By.CSS_SELECTOR, "span[data-notify='message']").text
+        self.assertEqual(message, "Data Created!")
+
     def tearDown(self):
-        self.driver.close
+        self.driver.close()
 
 
 class eec_admin_distribution_management(unittest.TestCase):
@@ -393,7 +422,8 @@ def suite():
     # suite.addTest(eec_admin_expert_management("test_expert_edit"))
     # suite.addTest(eec_admin_expert_management("test_expert_delete"))
 
-    suite.addTest(eec_admin_site_radar_management("test_site_view"))
+    # suite.addTest(eec_admin_site_radar_management("test_site_view"))
+    suite.addTest(eec_admin_site_radar_management("test_site_add"))
 
     # suite.addTest(eec_admin_distribution_management("test_distribution_view"))
     # suite.addTest(eec_admin_distribution_management("test_distribution_add"))
