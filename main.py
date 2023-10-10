@@ -331,6 +331,23 @@ class eec_admin_distribution_management(unittest.TestCase):
             By.CSS_SELECTOR, "span[data-notify='message']").text
         self.assertEqual(message, "Data Updated!")
 
+    def test_distribution_delete(self):
+        self.driver.get(constant.BASE_URL + "/home")
+        self.driver.find_element(
+            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/distribution']").click()
+        time.sleep(1)
+        self.driver.find_elements(
+            By.CSS_SELECTOR, "a.btn.btn-info")[1].click()
+        time.sleep(1)
+        self.driver.find_element(
+            By.CSS_SELECTOR, "button.btn.btn-danger").click()
+        self.driver.switch_to.alert.accept()
+
+        time.sleep(5)
+        message = self.driver.find_element(
+            By.CSS_SELECTOR, "span[data-notify='message']").text
+        self.assertEqual(message, "Data Deleted!")
+
     def tearDown(self):
         self.driver.close()
 
