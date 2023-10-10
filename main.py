@@ -306,6 +306,31 @@ class eec_admin_distribution_management(unittest.TestCase):
             By.CSS_SELECTOR, "span[data-notify='message']").text
         self.assertEqual(message, "Data Created!")
 
+    def test_distribution_edit(self):
+        self.driver.get(constant.BASE_URL + "/home")
+        self.driver.find_element(
+            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/distribution']").click()
+        time.sleep(1)
+        self.driver.find_elements(
+            By.CSS_SELECTOR, "a.btn.btn-info")[1].click()
+        time.sleep(1)
+        self.driver.find_element(By.CSS_SELECTOR, "a.btn.btn-warning").click()
+
+        time.sleep(1)
+        distribution_expert_element = self.driver.find_element(
+            By.ID, "expert_id")
+        distribution_expert = Select(distribution_expert_element)
+        distribution_expert.select_by_visible_text("Test Name")
+
+        self.driver.find_element(
+            By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']").click()
+        self.driver.switch_to.alert.accept()
+
+        time.sleep(5)
+        message = self.driver.find_element(
+            By.CSS_SELECTOR, "span[data-notify='message']").text
+        self.assertEqual(message, "Data Updated!")
+
     def tearDown(self):
         self.driver.close()
 
@@ -324,7 +349,10 @@ def suite():
     # suite.addTest(eec_admin_expert_management("test_expert_delete"))
 
     # suite.addTest(eec_admin_distribution_management("test_distribution_view"))
-    suite.addTest(eec_admin_distribution_management("test_distribution_add"))
+    # suite.addTest(eec_admin_distribution_management("test_distribution_add"))
+    # suite.addTest(eec_admin_distribution_management("test_distribution_edit"))
+    suite.addTest(eec_admin_distribution_management(
+        "test_distribution_delete"))
 
     suite.addTest(eec_authentication_logout("test_logout"))
     return suite
