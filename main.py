@@ -304,6 +304,23 @@ class eec_admin_site_radar_management(unittest.TestCase):
             By.CSS_SELECTOR, "span[data-notify='message']").text
         self.assertEqual(message, "Data Created!")
 
+    def test_site_delete(self):
+        self.driver.get(constant.BASE_URL + "/home")
+        self.driver.find_element(
+            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/site']").click()
+        time.sleep(1)
+        card_element = self.driver.find_element(
+            By.XPATH, "//strong[contains(text(),'Test Location')]/ancestor::div[contains(@class, 'card card-stats')]")
+        card_element.find_element(
+            By.XPATH, "//button[contains(@class, 'btn-danger')]").click()
+        time.sleep(1)
+        self.driver.switch_to.alert.accept()
+
+        time.sleep(5)
+        message = self.driver.find_element(
+            By.CSS_SELECTOR, "span[data-notify='message']").text
+        self.assertEqual(message, "Data Deleted!")
+
     def tearDown(self):
         self.driver.close()
 
@@ -416,14 +433,15 @@ def suite():
     # suite.addTest(eec_admin_account_management("test_account_verify"))
     # suite.addTest(eec_admin_account_management("test_account_delete"))
 
+    # suite.addTest(eec_admin_expert_management("test_expert_view"))
     # suite.addTest(eec_admin_expert_management("test_expert_add_not_eec"))
     # suite.addTest(eec_admin_expert_management("test_expert_add_eec"))
-    # suite.addTest(eec_admin_expert_management("test_expert_view"))
     # suite.addTest(eec_admin_expert_management("test_expert_edit"))
     # suite.addTest(eec_admin_expert_management("test_expert_delete"))
 
     # suite.addTest(eec_admin_site_radar_management("test_site_view"))
-    suite.addTest(eec_admin_site_radar_management("test_site_add"))
+    # suite.addTest(eec_admin_site_radar_management("test_site_add"))
+    suite.addTest(eec_admin_site_radar_management("test_site_delete"))
 
     # suite.addTest(eec_admin_distribution_management("test_distribution_view"))
     # suite.addTest(eec_admin_distribution_management("test_distribution_add"))
