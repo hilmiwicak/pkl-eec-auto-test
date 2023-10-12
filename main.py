@@ -2,15 +2,15 @@ import unittest
 import sys
 import time
 
-import constant
-import util
-
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver import Keys
 from selenium.webdriver.support.select import Select
+
+import constant
+import util
 
 
 def ignore_warning():
@@ -33,7 +33,6 @@ class eec_authentication_login(unittest.TestCase):
         self.driver = webdriver.Chrome(options=chrome_opt, service=service_obj)
         self.driver.implicitly_wait(5)
 
-    # @unittest.skip # type: ignore #no reason needed
     def test_login(self):
         self.driver.get(constant.BASE_URL + "/home")
         self.driver.find_element(
@@ -109,7 +108,6 @@ class eec_admin_account_management(unittest.TestCase):
         time.sleep(1)
         self.driver.switch_to.alert.accept()
 
-        # assert if the page have the word "User Approved"
         time.sleep(5)
         message = self.driver.find_element(
             By.CSS_SELECTOR, "span[data-notify='message']").text
@@ -125,7 +123,6 @@ class eec_admin_account_management(unittest.TestCase):
         time.sleep(1)
         self.driver.switch_to.alert.accept()
 
-        # assert if the page have the word "User Deleted"
         time.sleep(5)
         message = self.driver.find_element(
             By.CSS_SELECTOR, "span[data-notify='message']").text
@@ -269,8 +266,8 @@ class eec_admin_site_radar_management(unittest.TestCase):
         self.driver.get(constant.BASE_URL + "/home")
         self.driver.find_element(
             By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/site']").click()
-        time.sleep(1)
 
+        time.sleep(1)
         card_list = self.driver.find_elements(
             By.CSS_SELECTOR, ".row .col-lg-4.col-md-6.col-sm-6")
         self.assertGreater(len(card_list), 0)
@@ -320,6 +317,40 @@ class eec_admin_site_radar_management(unittest.TestCase):
         message = self.driver.find_element(
             By.CSS_SELECTOR, "span[data-notify='message']").text
         self.assertEqual(message, "Data Deleted!")
+
+    def tearDown(self):
+        self.driver.close()
+
+
+class eec_admin_site_radar_stock_management(unittest.TestCase):
+
+    def setUp(self):
+        service_obj = Service(constant.DRIVER_PATH)
+        chrome_opt = Options()
+        chrome_opt.binary_location = constant.CHROME_PATH
+        chrome_opt.add_argument(constant.CHROME_DATA)
+        chrome_opt.add_argument("--ignore-gpu-blocklist")
+        chrome_opt.add_experimental_option(
+            'excludeSwitches', ['enable-logging'])
+
+        self.driver = webdriver.Chrome(options=chrome_opt, service=service_obj)
+        self.driver.implicitly_wait(5)
+
+    def test_site_stock_view(self):
+        self.driver.get(constant.BASE_URL + "/home")
+        self.driver.find_element(
+            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/site']").click()
+        time.sleep(1)
+        card_element = self.driver.find_element(
+            By.XPATH, "//strong[contains(text(),'Test Location')]/ancestor::div[contains(@class, 'card card-stats')]")
+        a_element = card_element.find_element(
+            By.XPATH, ".//a[contains(@class, 'btn-info')]")
+        self.driver.execute_script("arguments[0].scrollIntoView();", a_element)
+        a_element.click()
+
+        time.sleep(5)
+        tr_element = self.driver.find_elements(By.CSS_SELECTOR, "tbody tr")
+        self.assertGreater(len(tr_element), 0)
 
     def tearDown(self):
         self.driver.close()
@@ -441,13 +472,16 @@ def suite():
 
     # suite.addTest(eec_admin_site_radar_management("test_site_view"))
     # suite.addTest(eec_admin_site_radar_management("test_site_add"))
-    suite.addTest(eec_admin_site_radar_management("test_site_delete"))
+    # suite.addTest(eec_admin_site_radar_management("test_site_delete"))
 
     # suite.addTest(eec_admin_distribution_management("test_distribution_view"))
     # suite.addTest(eec_admin_distribution_management("test_distribution_add"))
     # suite.addTest(eec_admin_distribution_management("test_distribution_edit"))
     # suite.addTest(eec_admin_distribution_management(
     #     "test_distribution_delete"))
+
+    suite.addTest(eec_admin_site_radar_stock_management(
+        "test_site_stock_view"))
 
     suite.addTest(eec_authentication_logout("test_logout"))
     return suite
