@@ -451,6 +451,28 @@ class eec_admin_site_radar_stock_management(unittest.TestCase):
             By.CSS_SELECTOR, "span[data-notify='message']").text
         self.assertEqual(message, "Data Edited!")
 
+    def test_site_stock_delete(self):
+        self.driver.get(constant.BASE_URL + "/home")
+        self.driver.find_element(
+            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/site']").click()
+        time.sleep(1)
+        card_element = self.driver.find_element(
+            By.XPATH, "//strong[contains(text(),'Test Location')]/ancestor::div[contains(@class, 'card card-stats')]")
+        a_element = card_element.find_element(
+            By.XPATH, ".//a[contains(@class, 'btn-info')]")
+        self.driver.execute_script("arguments[0].scrollIntoView();", a_element)
+        a_element.click()
+        time.sleep(1)
+        self.driver.find_element(
+            By.CSS_SELECTOR, "button.btn-danger").click()
+        time.sleep(1)
+        self.driver.switch_to.alert.accept()
+
+        time.sleep(5)
+        message = self.driver.find_element(
+            By.CSS_SELECTOR, "span[data-notify='message']").text
+        self.assertEqual(message, "Data Deleted!")
+
     def tearDown(self):
         self.driver.close()
 
@@ -582,8 +604,10 @@ def suite():
     # suite.addTest(eec_admin_site_radar_stock_management(
     #     "test_site_stock_view"))
     # suite.addTest(eec_admin_site_radar_stock_management("test_site_stock_add"))
+    # suite.addTest(eec_admin_site_radar_stock_management(
+    #     "test_site_stock_edit"))
     suite.addTest(eec_admin_site_radar_stock_management(
-        "test_site_stock_edit"))
+        "test_site_stock_delete"))
 
     suite.addTest(eec_authentication_logout("test_logout"))
     return suite
