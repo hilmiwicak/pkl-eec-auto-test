@@ -352,6 +352,59 @@ class eec_admin_site_radar_stock_management(unittest.TestCase):
         tr_element = self.driver.find_elements(By.CSS_SELECTOR, "tbody tr")
         self.assertGreater(len(tr_element), 0)
 
+    def test_site_stock_add(self):
+        self.driver.get(constant.BASE_URL + "/home")
+        self.driver.find_element(
+            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/site']").click()
+        time.sleep(1)
+        card_element = self.driver.find_element(
+            By.XPATH, "//strong[contains(text(),'Test Location')]/ancestor::div[contains(@class, 'card card-stats')]")
+        a_element = card_element.find_element(
+            By.XPATH, ".//a[contains(@class, 'btn-info')]")
+        self.driver.execute_script("arguments[0].scrollIntoView();", a_element)
+        a_element.click()
+        time.sleep(1)
+        self.driver.find_element(
+            By.CSS_SELECTOR, "a.btn-outline-primary.text-right").click()
+
+        time.sleep(1)
+        stock_sel_element_0 = self.driver.find_element(
+            By.CSS_SELECTOR, "select[name='stocks[0][stock_id]']")
+        stock_sel_0 = Select(stock_sel_element_0)
+        stock_sel_0.select_by_index(1)
+
+        time.sleep(1)
+        self.driver.find_element(
+            By.CSS_SELECTOR, "button.btn-secondary").click()
+        stock_sel_element_1 = self.driver.find_element(
+            By.CSS_SELECTOR, "select[name='stocks[1][stock_id]']")
+        stock_sel_1 = Select(stock_sel_element_1)
+        stock_sel_1.select_by_index(2)
+
+        time.sleep(1)
+        self.driver.find_element(
+            By.CSS_SELECTOR, "button.btn-secondary").click()
+        stock_sel_element_2 = self.driver.find_element(
+            By.CSS_SELECTOR, "select[name='stocks[2][stock_id]']")
+        stock_sel_2 = Select(stock_sel_element_2)
+        stock_sel_2.select_by_index(3)
+
+        time.sleep(1)
+        self.driver.find_element(
+            By.CSS_SELECTOR, "button.btn-secondary").click()
+        stock_sel_element_3 = self.driver.find_element(
+            By.CSS_SELECTOR, "select[name='stocks[3][stock_id]']")
+        stock_sel_3 = Select(stock_sel_element_3)
+        stock_sel_3.select_by_index(4)
+
+        self.driver.find_element(
+            By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']").click()
+
+        time.sleep(5)
+        message = self.driver.find_element(
+            By.CSS_SELECTOR, "span[data-notify='message']").text
+        self.assertEqual(message, "Data Created!")
+
     def tearDown(self):
         self.driver.close()
 
@@ -480,8 +533,9 @@ def suite():
     # suite.addTest(eec_admin_distribution_management(
     #     "test_distribution_delete"))
 
-    suite.addTest(eec_admin_site_radar_stock_management(
-        "test_site_stock_view"))
+    # suite.addTest(eec_admin_site_radar_stock_management(
+    #     "test_site_stock_view"))
+    suite.addTest(eec_admin_site_radar_stock_management("test_site_stock_add"))
 
     suite.addTest(eec_authentication_logout("test_logout"))
     return suite
