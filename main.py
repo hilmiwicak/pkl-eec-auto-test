@@ -405,6 +405,52 @@ class eec_admin_site_radar_stock_management(unittest.TestCase):
             By.CSS_SELECTOR, "span[data-notify='message']").text
         self.assertEqual(message, "Data Created!")
 
+    def test_site_stock_edit(self):
+        self.driver.get(constant.BASE_URL + "/home")
+        self.driver.find_element(
+            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/site']").click()
+        time.sleep(1)
+        card_element = self.driver.find_element(
+            By.XPATH, "//strong[contains(text(),'Test Location')]/ancestor::div[contains(@class, 'card card-stats')]")
+        a_element = card_element.find_element(
+            By.XPATH, ".//a[contains(@class, 'btn-info')]")
+        self.driver.execute_script("arguments[0].scrollIntoView();", a_element)
+        a_element.click()
+        time.sleep(1)
+        self.driver.find_element(
+            By.CSS_SELECTOR, "a.btn-warning").click()
+
+        time.sleep(1)
+        name_input_element = self.driver.find_element(
+            By.ID, "nama_barang")
+        name_input_element.send_keys(Keys.CONTROL, 'a')
+        name_input_element.send_keys(Keys.DELETE)
+        name_input_element.send_keys("Test Stock Radar")
+
+        self.driver.find_element(
+            By.CSS_SELECTOR, "span.select2-selection__arrow").click()
+        self.driver.find_element(
+            By.CSS_SELECTOR, "li[aria-selected='false']").click()
+
+        part_number_element = self.driver.find_element(By.ID, "part_number")
+        part_number_element.send_keys(Keys.BACKSPACE)
+        part_number_element.send_keys(Keys.BACKSPACE)
+        part_number_element.send_keys("20")
+
+        self.driver.find_element(By.ID, "serial_number").send_keys("1a111")
+
+        self.driver.find_element(By.ID, "tgl_masuk").send_keys("10162023")
+
+        self.driver.find_element(By.ID, "expired").send_keys("11162023")
+
+        self.driver.find_element(
+            By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']").click()
+
+        time.sleep(5)
+        message = self.driver.find_element(
+            By.CSS_SELECTOR, "span[data-notify='message']").text
+        self.assertEqual(message, "Data Edited!")
+
     def tearDown(self):
         self.driver.close()
 
@@ -535,7 +581,9 @@ def suite():
 
     # suite.addTest(eec_admin_site_radar_stock_management(
     #     "test_site_stock_view"))
-    suite.addTest(eec_admin_site_radar_stock_management("test_site_stock_add"))
+    # suite.addTest(eec_admin_site_radar_stock_management("test_site_stock_add"))
+    suite.addTest(eec_admin_site_radar_stock_management(
+        "test_site_stock_edit"))
 
     suite.addTest(eec_authentication_logout("test_logout"))
     return suite
