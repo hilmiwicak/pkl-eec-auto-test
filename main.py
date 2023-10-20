@@ -501,6 +501,53 @@ class eec_admin_stock_management(unittest.TestCase):
         tr = self.driver.find_elements(By.CSS_SELECTOR, "tr")
         self.assertGreater(len(tr), 1)
 
+    def test_stock_add(self):
+        self.driver.get(constant.BASE_URL + "/home")
+        self.driver.find_element(
+            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/stocks']").click()
+        time.sleep(1)
+        self.driver.find_element(
+            By.CSS_SELECTOR, "a.btn-outline-primary[data-original-title='add item']").click()
+
+        time.sleep(1)
+        self.driver.find_element(By.ID, "nama_barang").send_keys(
+            "Test Item Inventory")
+
+        self.driver.find_element(
+            By.CSS_SELECTOR, "span.select2-selection__arrow").click()
+        self.driver.find_element(
+            By.CSS_SELECTOR, "li[aria-selected='false']").click()
+
+        self.driver.find_element(By.ID, "part_number").send_keys(
+            util.random_part_number())
+
+        self.driver.find_element(By.ID, "ref_des").send_keys(
+            util.random_serial_number())
+
+        self.driver.find_element(By.ID, "tgl_masuk").send_keys("10162023")
+
+        self.driver.find_element(By.ID, "expired").send_keys("11162023")
+
+        self.driver.find_element(By.ID, "button_kurs_beli").click()
+
+        self.driver.find_element(By.ID, "jumlah_unit").send_keys("1")
+
+        stock_status_element = self.driver.find_element(By.ID, "status")
+        self.driver.execute_script("arguments[0].scrollIntoView();", stock_status_element)
+        stock_status_select = Select(stock_status_element)
+        stock_status_select.select_by_value("Dummy")
+
+        self.driver.find_element(By.ID, "keterangan").send_keys(
+            "Keterangan Test Item")
+
+        self.driver.find_element(
+            By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']").click()
+
+        time.sleep(5)
+        message = self.driver.find_element(
+            By.CSS_SELECTOR, "span[data-notify='message']").text
+        self.assertEqual(message, "Data berhasil ditambah!")
+
     def tearDown(self):
         self.driver.close()
 
@@ -637,7 +684,8 @@ def suite():
     # suite.addTest(eec_admin_site_radar_stock_management(
     #     "test_site_stock_delete"))
 
-    suite.addTest(eec_admin_stock_management("test_stock_view"))
+    # suite.addTest(eec_admin_stock_management("test_stock_view"))
+    suite.addTest(eec_admin_stock_management("test_stock_add"))
 
     suite.addTest(eec_authentication_logout("test_logout"))
     return suite
