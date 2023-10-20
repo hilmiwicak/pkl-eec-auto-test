@@ -167,11 +167,11 @@ class eec_admin_expert_management(unittest.TestCase):
             By.CSS_SELECTOR, "a.btn-primary").click()
         time.sleep(1)
         self.driver.find_element(
-            By.CSS_SELECTOR, "#name").send_keys("Test Name")
+            By.ID, "name").send_keys("Test Name")
         self.driver.find_element(
-            By.CSS_SELECTOR, "#nip").send_keys(util.random_nip_16())
+            By.ID, "nip").send_keys(util.random_nip_16())
         self.driver.find_element(
-            By.CSS_SELECTOR, "#expert_company").send_keys("Test Company")
+            By.ID, "expert_company").send_keys("Test Company")
         self.driver.find_element(
             By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']").click()
         self.driver.switch_to.alert.accept()
@@ -190,10 +190,10 @@ class eec_admin_expert_management(unittest.TestCase):
             By.CSS_SELECTOR, "a.btn-primary").click()
         time.sleep(1)
         self.driver.find_element(
-            By.CSS_SELECTOR, "#name").send_keys("Test Name")
+            By.ID, "name").send_keys("Test Name")
         self.driver.find_element(
-            By.CSS_SELECTOR, "#nip").send_keys(util.random_nip_11())
-        self.driver.find_element(By.CSS_SELECTOR, "#eec_expert").click()
+            By.ID, "nip").send_keys(util.random_nip_11())
+        self.driver.find_element(By.ID, "eec_expert").click()
         self.driver.find_element(
             By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']").click()
         self.driver.switch_to.alert.accept()
@@ -212,13 +212,13 @@ class eec_admin_expert_management(unittest.TestCase):
             By.CSS_SELECTOR, "a.btn.btn-warning").click()
         time.sleep(1)
         name_input_element = self.driver.find_element(
-            By.CSS_SELECTOR, "#name")
+            By.ID, "name")
         name_input_element.send_keys(Keys.CONTROL, 'a')
         name_input_element.send_keys(Keys.DELETE)
         name_input_element.send_keys("Test Name")
 
         nip_input_element = self.driver.find_element(
-            By.CSS_SELECTOR, "#nip")
+            By.ID, "nip")
         nip_input_element.send_keys(Keys.BACKSPACE)
         nip_input_element.send_keys("1")
 
@@ -433,11 +433,12 @@ class eec_admin_site_radar_stock_management(unittest.TestCase):
             By.CSS_SELECTOR, "li[aria-selected='false']").click()
 
         part_number_element = self.driver.find_element(By.ID, "part_number")
+        part_number_element.send_keys(Keys.CONTROL, 'a')
         part_number_element.send_keys(Keys.BACKSPACE)
-        part_number_element.send_keys(Keys.BACKSPACE)
-        part_number_element.send_keys("20")
+        part_number_element.send_keys(util.random_part_number())
 
-        self.driver.find_element(By.ID, "serial_number").send_keys("1a111")
+        self.driver.find_element(By.ID, "serial_number").send_keys(
+            util.random_serial_number())
 
         self.driver.find_element(By.ID, "tgl_masuk").send_keys("10162023")
 
@@ -472,6 +473,33 @@ class eec_admin_site_radar_stock_management(unittest.TestCase):
         message = self.driver.find_element(
             By.CSS_SELECTOR, "span[data-notify='message']").text
         self.assertEqual(message, "Data Deleted!")
+
+    def tearDown(self):
+        self.driver.close()
+
+
+class eec_admin_stock_management(unittest.TestCase):
+
+    def setUp(self):
+        service_obj = Service(constant.DRIVER_PATH)
+        chrome_opt = Options()
+        chrome_opt.binary_location = constant.CHROME_PATH
+        chrome_opt.add_argument(constant.CHROME_DATA)
+        chrome_opt.add_argument("--ignore-gpu-blocklist")
+        chrome_opt.add_experimental_option(
+            'excludeSwitches', ['enable-logging'])
+
+        self.driver = webdriver.Chrome(options=chrome_opt, service=service_obj)
+        self.driver.implicitly_wait(5)
+
+    def test_stock_view(self):
+        self.driver.get(constant.BASE_URL + "/home")
+        self.driver.find_element(
+            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/stocks']").click()
+
+        time.sleep(1)
+        tr = self.driver.find_elements(By.CSS_SELECTOR, "tr")
+        self.assertGreater(len(tr), 1)
 
     def tearDown(self):
         self.driver.close()
@@ -591,23 +619,25 @@ def suite():
     # suite.addTest(eec_admin_expert_management("test_expert_edit"))
     # suite.addTest(eec_admin_expert_management("test_expert_delete"))
 
-    # suite.addTest(eec_admin_site_radar_management("test_site_view"))
-    # suite.addTest(eec_admin_site_radar_management("test_site_add"))
-    # suite.addTest(eec_admin_site_radar_management("test_site_delete"))
-
     # suite.addTest(eec_admin_distribution_management("test_distribution_view"))
     # suite.addTest(eec_admin_distribution_management("test_distribution_add"))
     # suite.addTest(eec_admin_distribution_management("test_distribution_edit"))
     # suite.addTest(eec_admin_distribution_management(
     #     "test_distribution_delete"))
 
+    # suite.addTest(eec_admin_site_radar_management("test_site_view"))
+    # suite.addTest(eec_admin_site_radar_management("test_site_add"))
+    # suite.addTest(eec_admin_site_radar_management("test_site_delete"))
+
     # suite.addTest(eec_admin_site_radar_stock_management(
     #     "test_site_stock_view"))
     # suite.addTest(eec_admin_site_radar_stock_management("test_site_stock_add"))
     # suite.addTest(eec_admin_site_radar_stock_management(
     #     "test_site_stock_edit"))
-    suite.addTest(eec_admin_site_radar_stock_management(
-        "test_site_stock_delete"))
+    # suite.addTest(eec_admin_site_radar_stock_management(
+    #     "test_site_stock_delete"))
+
+    suite.addTest(eec_admin_stock_management("test_stock_view"))
 
     suite.addTest(eec_authentication_logout("test_logout"))
     return suite
