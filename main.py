@@ -41,7 +41,7 @@ class eec_authentication_login(unittest.TestCase):
             By.CSS_SELECTOR, "input.form-control[type='password']").send_keys("secret")
         button = self.driver.find_element(
             By.CSS_SELECTOR, "button.btn[type='submit']")
-        self.driver.execute_script("arguments[0].scrollIntoView();", button)
+        button.location_once_scrolled_into_view
         button.click()
 
         # assert the next page have the word "Dashboard admin"
@@ -176,7 +176,7 @@ class eec_admin_expert_management(unittest.TestCase):
             By.ID, "expert_company").send_keys("Test Company")
         button = self.driver.find_element(
             By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']")
-        self.driver.execute_script("arguments[0].scrollIntoView();", button)
+        button.location_once_scrolled_into_view
         button.click()
         self.driver.switch_to.alert.accept()
 
@@ -200,7 +200,7 @@ class eec_admin_expert_management(unittest.TestCase):
         self.driver.find_element(By.ID, "eec_expert").click()
         button = self.driver.find_element(
             By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']")
-        self.driver.execute_script("arguments[0].scrollIntoView();", button)
+        button.location_once_scrolled_into_view
         button.click()
         self.driver.switch_to.alert.accept()
 
@@ -229,7 +229,7 @@ class eec_admin_expert_management(unittest.TestCase):
 
         button = self.driver.find_element(
             By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']")
-        self.driver.execute_script("arguments[0].scrollIntoView();", button)
+        button.location_once_scrolled_into_view
         button.click()
         self.driver.switch_to.alert.accept()
 
@@ -301,7 +301,7 @@ class eec_admin_site_radar_management(unittest.TestCase):
 
         button = self.driver.find_element(
             By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']")
-        self.driver.execute_script("arguments[0].scrollIntoView();", button)
+        button.location_once_scrolled_into_view
         button.click()
         self.driver.switch_to.alert.accept()
 
@@ -354,7 +354,7 @@ class eec_admin_site_radar_stock_management(unittest.TestCase):
             By.XPATH, "//strong[contains(text(),'Test Location')]/ancestor::div[contains(@class, 'card card-stats')]")
         a_element = card_element.find_element(
             By.XPATH, ".//a[contains(@class, 'btn-info')]")
-        self.driver.execute_script("arguments[0].scrollIntoView();", a_element)
+        a_element.location_once_scrolled_into_view
         a_element.click()
 
         time.sleep(5)
@@ -370,7 +370,7 @@ class eec_admin_site_radar_stock_management(unittest.TestCase):
             By.XPATH, "//strong[contains(text(),'Test Location')]/ancestor::div[contains(@class, 'card card-stats')]")
         a_element = card_element.find_element(
             By.XPATH, ".//a[contains(@class, 'btn-info')]")
-        self.driver.execute_script("arguments[0].scrollIntoView();", a_element)
+        a_element.location_once_scrolled_into_view
         a_element.click()
         time.sleep(1)
         self.driver.find_element(
@@ -408,7 +408,7 @@ class eec_admin_site_radar_stock_management(unittest.TestCase):
 
         button = self.driver.find_element(
             By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']")
-        self.driver.execute_script("arguments[0].scrollIntoView();", button)
+        button.location_once_scrolled_into_view
         button.click()
 
         time.sleep(5)
@@ -425,7 +425,7 @@ class eec_admin_site_radar_stock_management(unittest.TestCase):
             By.XPATH, "//strong[contains(text(),'Test Location')]/ancestor::div[contains(@class, 'card card-stats')]")
         a_element = card_element.find_element(
             By.XPATH, ".//a[contains(@class, 'btn-info')]")
-        self.driver.execute_script("arguments[0].scrollIntoView();", a_element)
+        a_element.location_once_scrolled_into_view
         a_element.click()
         time.sleep(1)
         self.driver.find_element(
@@ -455,7 +455,7 @@ class eec_admin_site_radar_stock_management(unittest.TestCase):
 
         button = self.driver.find_element(
             By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']")
-        self.driver.execute_script("arguments[0].scrollIntoView();", button)
+        button.location_once_scrolled_into_view
         button.click()
 
         time.sleep(5)
@@ -472,7 +472,7 @@ class eec_admin_site_radar_stock_management(unittest.TestCase):
             By.XPATH, "//strong[contains(text(),'Test Location')]/ancestor::div[contains(@class, 'card card-stats')]")
         a_element = card_element.find_element(
             By.XPATH, ".//a[contains(@class, 'btn-info')]")
-        self.driver.execute_script("arguments[0].scrollIntoView();", a_element)
+        a_element.location_once_scrolled_into_view
         a_element.click()
         time.sleep(1)
         self.driver.find_element(
@@ -544,21 +544,81 @@ class eec_admin_stock_management(unittest.TestCase):
         self.driver.find_element(By.ID, "jumlah_unit").send_keys("1")
 
         stock_status_element = self.driver.find_element(By.ID, "status")
-        self.driver.execute_script(
-            "arguments[0].scrollIntoView();", stock_status_element)
+        stock_status_element.location_once_scrolled_into_view
         stock_status_select = Select(stock_status_element)
-        stock_status_select.select_by_value("Dummy")
+        stock_status_select.select_by_value("Obsolete")
 
         self.driver.find_element(By.ID, "keterangan").send_keys(
             "Keterangan Test Item")
 
-        self.driver.find_element(
-            By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']").click()
+        button_element = self.driver.find_element(
+            By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']")
+        button_element.location_once_scrolled_into_view
+        button_element.click()
 
         time.sleep(5)
         message = self.driver.find_element(
             By.CSS_SELECTOR, "span[data-notify='message']").text
         self.assertEqual(message, "Data berhasil ditambah!")
+
+    def test_stock_edit(self):
+        # self.driver.get(constant.BASE_URL + "/home")
+        # self.driver.find_element(
+        #     By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/stocks']").click()
+        self.driver.get(constant.BASE_URL + "/stocks")
+        time.sleep(1)
+        self.driver.find_element(
+            By.CSS_SELECTOR, "a.btn.btn-warning").click()
+
+        time.sleep(1)
+
+        name_element = self.driver.find_element(By.ID, "nama_barang")
+        name_element.clear()
+        name_element.send_keys("Test Stock Edit")
+
+        self.driver.find_element(
+            By.CSS_SELECTOR, "span.select2-selection__arrow").click()
+        self.driver.find_element(
+            By.CSS_SELECTOR, "li[aria-selected='false']").click()
+
+        part_number_element = self.driver.find_element(By.ID, "part_number")
+        part_number_element.clear()
+        part_number_element.send_keys(util.random_part_number())
+
+        ref_des_element = self.driver.find_element(By.ID, "ref_des")
+        ref_des_element.clear()
+        ref_des_element.send_keys(util.random_serial_number())
+
+        self.driver.find_element(By.ID, "tgl_masuk").send_keys("10262023")
+
+        expired_element = self.driver.find_element(By.ID, "expired")
+        expired_element.location_once_scrolled_into_view
+        expired_element.send_keys("11262023")
+
+        unit_element = self.driver.find_element(By.ID, "jumlah_unit")
+        unit_element.clear()
+        unit_element.send_keys("2")
+
+        stock_status_element = self.driver.find_element(By.ID, "status")
+        stock_status_element.location_once_scrolled_into_view
+        stock_status_select = Select(stock_status_element)
+        stock_status_select.select_by_value("Dummy")
+
+        description_element = self.driver.find_element(
+            By.ID, "keterangan")
+        description_element.location_once_scrolled_into_view
+        description_element.clear()
+        description_element.send_keys("Keterangan Test Stock Edit")
+
+        button_element = self.driver.find_element(
+            By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']")
+        button_element.location_once_scrolled_into_view
+        button_element.click()
+
+        time.sleep(5)
+        message = self.driver.find_element(
+            By.CSS_SELECTOR, "span[data-notify='message']").text
+        self.assertEqual(message, "Data berhasil di update")
 
     def tearDown(self):
         self.driver.close()
@@ -697,7 +757,8 @@ def suite():
     #     "test_site_stock_delete"))
 
     # suite.addTest(eec_admin_stock_management("test_stock_view"))
-    suite.addTest(eec_admin_stock_management("test_stock_add"))
+    # suite.addTest(eec_admin_stock_management("test_stock_add"))
+    suite.addTest(eec_admin_stock_management("test_stock_edit"))
 
     suite.addTest(eec_authentication_logout("test_logout"))
     return suite
