@@ -620,6 +620,21 @@ class eec_admin_stock_management(unittest.TestCase):
             By.CSS_SELECTOR, "span[data-notify='message']").text
         self.assertEqual(message, "Data berhasil di update")
 
+    def test_stock_delete(self):
+        # self.driver.get(constant.BASE_URL + "/home")
+        # self.driver.find_element(
+        #     By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/stocks']").click()
+        self.driver.get(constant.BASE_URL + "/stocks")
+        time.sleep(1)
+        self.driver.find_element(
+            By.CSS_SELECTOR, "button.btn.btn-danger").click()
+        self.driver.switch_to.alert.accept()
+
+        time.sleep(5)
+        message = self.driver.find_element(
+            By.CSS_SELECTOR, "span[data-notify='message']").text
+        self.assertEqual(message, "Data berhasil di hapus")
+
     def tearDown(self):
         self.driver.close()
 
@@ -758,7 +773,8 @@ def suite():
 
     # suite.addTest(eec_admin_stock_management("test_stock_view"))
     # suite.addTest(eec_admin_stock_management("test_stock_add"))
-    suite.addTest(eec_admin_stock_management("test_stock_edit"))
+    # suite.addTest(eec_admin_stock_management("test_stock_edit"))
+    suite.addTest(eec_admin_stock_management("test_stock_delete"))
 
     suite.addTest(eec_authentication_logout("test_logout"))
     return suite
