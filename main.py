@@ -39,8 +39,10 @@ class eec_authentication_login(unittest.TestCase):
             By.CSS_SELECTOR, "input.form-control[type='email']").send_keys("admin@eecid.com")
         self.driver.find_element(
             By.CSS_SELECTOR, "input.form-control[type='password']").send_keys("secret")
-        self.driver.find_element(
-            By.CSS_SELECTOR, "button.btn[type='submit']").click()
+        button = self.driver.find_element(
+            By.CSS_SELECTOR, "button.btn[type='submit']")
+        self.driver.execute_script("arguments[0].scrollIntoView();", button)
+        button.click()
 
         # assert the next page have the word "Dashboard admin"
         cur_url = self.driver.current_url
@@ -172,8 +174,10 @@ class eec_admin_expert_management(unittest.TestCase):
             By.ID, "nip").send_keys(util.random_nip_16())
         self.driver.find_element(
             By.ID, "expert_company").send_keys("Test Company")
-        self.driver.find_element(
-            By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']").click()
+        button = self.driver.find_element(
+            By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']")
+        self.driver.execute_script("arguments[0].scrollIntoView();", button)
+        button.click()
         self.driver.switch_to.alert.accept()
 
         time.sleep(5)
@@ -194,8 +198,10 @@ class eec_admin_expert_management(unittest.TestCase):
         self.driver.find_element(
             By.ID, "nip").send_keys(util.random_nip_11())
         self.driver.find_element(By.ID, "eec_expert").click()
-        self.driver.find_element(
-            By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']").click()
+        button = self.driver.find_element(
+            By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']")
+        self.driver.execute_script("arguments[0].scrollIntoView();", button)
+        button.click()
         self.driver.switch_to.alert.accept()
 
         time.sleep(5)
@@ -213,8 +219,7 @@ class eec_admin_expert_management(unittest.TestCase):
         time.sleep(1)
         name_input_element = self.driver.find_element(
             By.ID, "name")
-        name_input_element.send_keys(Keys.CONTROL, 'a')
-        name_input_element.send_keys(Keys.DELETE)
+        name_input_element.clear()
         name_input_element.send_keys("Test Name")
 
         nip_input_element = self.driver.find_element(
@@ -222,8 +227,10 @@ class eec_admin_expert_management(unittest.TestCase):
         nip_input_element.send_keys(Keys.BACKSPACE)
         nip_input_element.send_keys("1")
 
-        self.driver.find_element(
-            By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']").click()
+        button = self.driver.find_element(
+            By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']")
+        self.driver.execute_script("arguments[0].scrollIntoView();", button)
+        button.click()
         self.driver.switch_to.alert.accept()
 
         time.sleep(5)
@@ -292,8 +299,10 @@ class eec_admin_site_radar_management(unittest.TestCase):
         stock_site_select = Select(stock_site_element)
         stock_site_select.select_by_index(1)
 
-        self.driver.find_element(
-            By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']").click()
+        button = self.driver.find_element(
+            By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']")
+        self.driver.execute_script("arguments[0].scrollIntoView();", button)
+        button.click()
         self.driver.switch_to.alert.accept()
 
         time.sleep(5)
@@ -397,8 +406,10 @@ class eec_admin_site_radar_stock_management(unittest.TestCase):
         stock_sel_3 = Select(stock_sel_element_3)
         stock_sel_3.select_by_index(4)
 
-        self.driver.find_element(
-            By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']").click()
+        button = self.driver.find_element(
+            By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']")
+        self.driver.execute_script("arguments[0].scrollIntoView();", button)
+        button.click()
 
         time.sleep(5)
         message = self.driver.find_element(
@@ -423,8 +434,7 @@ class eec_admin_site_radar_stock_management(unittest.TestCase):
         time.sleep(1)
         name_input_element = self.driver.find_element(
             By.ID, "nama_barang")
-        name_input_element.send_keys(Keys.CONTROL, 'a')
-        name_input_element.send_keys(Keys.DELETE)
+        name_input_element.clear()
         name_input_element.send_keys("Test Stock Radar")
 
         self.driver.find_element(
@@ -433,8 +443,7 @@ class eec_admin_site_radar_stock_management(unittest.TestCase):
             By.CSS_SELECTOR, "li[aria-selected='false']").click()
 
         part_number_element = self.driver.find_element(By.ID, "part_number")
-        part_number_element.send_keys(Keys.CONTROL, 'a')
-        part_number_element.send_keys(Keys.BACKSPACE)
+        part_number_element.clear()
         part_number_element.send_keys(util.random_part_number())
 
         self.driver.find_element(By.ID, "serial_number").send_keys(
@@ -444,8 +453,10 @@ class eec_admin_site_radar_stock_management(unittest.TestCase):
 
         self.driver.find_element(By.ID, "expired").send_keys("11162023")
 
-        self.driver.find_element(
-            By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']").click()
+        button = self.driver.find_element(
+            By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']")
+        self.driver.execute_script("arguments[0].scrollIntoView();", button)
+        button.click()
 
         time.sleep(5)
         message = self.driver.find_element(
@@ -533,7 +544,8 @@ class eec_admin_stock_management(unittest.TestCase):
         self.driver.find_element(By.ID, "jumlah_unit").send_keys("1")
 
         stock_status_element = self.driver.find_element(By.ID, "status")
-        self.driver.execute_script("arguments[0].scrollIntoView();", stock_status_element)
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView();", stock_status_element)
         stock_status_select = Select(stock_status_element)
         stock_status_select.select_by_value("Dummy")
 
