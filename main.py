@@ -178,6 +178,48 @@ class eec_admin_account_management(unittest.TestCase):
         self.driver.close()
 
 
+class eec_admin_maintenance_management(unittest.TestCase):
+
+    def setUp(self):
+        service_obj = Service(constant.DRIVER_PATH)
+        chrome_opt = Options()
+        chrome_opt.binary_location = constant.CHROME_PATH
+        chrome_opt.add_argument(constant.CHROME_DATA)
+        chrome_opt.add_argument("--ignore-gpu-blocklist")
+        chrome_opt.add_experimental_option(
+            'excludeSwitches', ['enable-logging'])
+
+        self.driver = webdriver.Chrome(options=chrome_opt, service=service_obj)
+        self.driver.implicitly_wait(5)
+
+    def test_pm_view(self):
+        self.driver.get(constant.BASE_URL + "/home")
+        self.driver.find_element(
+            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/expertActivity']").click()
+        time.sleep(1)
+        self.driver.find_element(
+            By.CSS_SELECTOR, "a.btn-info[href='" + constant.BASE_URL + "/pm']").click()
+
+        time.sleep(1)
+        tr = self.driver.find_elements(By.CSS_SELECTOR, "tr")
+        self.assertGreater(len(tr), 1)
+
+    def test_cm_view(self):
+        self.driver.get(constant.BASE_URL + "/home")
+        self.driver.find_element(
+            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/expertActivity']").click()
+        time.sleep(1)
+        self.driver.find_element(
+            By.CSS_SELECTOR, "a.btn-info[href='" + constant.BASE_URL + "/cm']").click()
+
+        time.sleep(1)
+        tr = self.driver.find_elements(By.CSS_SELECTOR, "tr")
+        self.assertGreater(len(tr), 1)
+
+    def tearDown(self):
+        self.driver.close()
+
+
 class eec_admin_expert_management(unittest.TestCase):
 
     def setUp(self):
@@ -788,7 +830,7 @@ def suite():
     suite = unittest.TestSuite()
     suite.addTest(eec_authentication_login("test_login"))
 
-    suite.addTest(eec_admin_management("test_admin_password_edit"))
+    # suite.addTest(eec_admin_management("test_admin_password_edit"))
 
     # suite.addTest(eec_admin_account_management("test_account_verify"))
     # suite.addTest(eec_admin_account_management("test_account_delete"))
@@ -798,6 +840,9 @@ def suite():
     # suite.addTest(eec_admin_expert_management("test_expert_add_eec"))
     # suite.addTest(eec_admin_expert_management("test_expert_edit"))
     # suite.addTest(eec_admin_expert_management("test_expert_delete"))
+
+    suite.addTest(eec_admin_maintenance_management("test_pm_view"))
+    suite.addTest(eec_admin_maintenance_management("test_cm_view"))
 
     # suite.addTest(eec_admin_distribution_management("test_distribution_view"))
     # suite.addTest(eec_admin_distribution_management("test_distribution_add"))
