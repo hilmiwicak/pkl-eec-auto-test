@@ -476,8 +476,8 @@ class eec_admin_site_radar_stock_management(unittest.TestCase):
         a_element.click()
 
         time.sleep(5)
-        tr_element = self.driver.find_elements(By.CSS_SELECTOR, "tbody tr")
-        self.assertGreater(len(tr_element), 0)
+        tr = self.driver.find_elements(By.CSS_SELECTOR, "tbody tr")
+        self.assertGreater(len(tr_element), 1)
 
     def test_site_stock_add(self):
         self.driver.get(constant.BASE_URL + "/home")
@@ -680,10 +680,9 @@ class eec_admin_stock_management(unittest.TestCase):
         self.assertEqual(message, "Data berhasil ditambah!")
 
     def test_stock_edit(self):
-        # self.driver.get(constant.BASE_URL + "/home")
-        # self.driver.find_element(
-        #     By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/stocks']").click()
-        self.driver.get(constant.BASE_URL + "/stocks")
+        self.driver.get(constant.BASE_URL + "/home")
+        self.driver.find_element(
+            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/stocks']").click()
         time.sleep(1)
         self.driver.find_element(
             By.CSS_SELECTOR, "a.btn.btn-warning").click()
@@ -739,10 +738,9 @@ class eec_admin_stock_management(unittest.TestCase):
         self.assertEqual(message, "Data berhasil di update")
 
     def test_stock_delete(self):
-        # self.driver.get(constant.BASE_URL + "/home")
-        # self.driver.find_element(
-        #     By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/stocks']").click()
-        self.driver.get(constant.BASE_URL + "/stocks")
+        self.driver.get(constant.BASE_URL + "/home")
+        self.driver.find_element(
+            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/stocks']").click()
         time.sleep(1)
         self.driver.find_element(
             By.CSS_SELECTOR, "button.btn.btn-danger").click()
@@ -752,6 +750,18 @@ class eec_admin_stock_management(unittest.TestCase):
         message = self.driver.find_element(
             By.CSS_SELECTOR, "span[data-notify='message']").text
         self.assertEqual(message, "Data berhasil di hapus")
+
+    def test_stock_recommendation_view(self):
+        self.driver.get(constant.BASE_URL + "/home")
+        self.driver.find_element(
+            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/stocks']").click()
+        time.sleep(1)
+        self.driver.find_element(
+            By.CSS_SELECTOR, "a[data-original-title='recommendation item']").click()
+
+        time.sleep(1)
+        tr = self.driver.find_elements(By.CSS_SELECTOR, "tr")
+        self.assertGreater(len(tr), 1)
 
     def tearDown(self):
         self.driver.close()
@@ -875,8 +885,8 @@ def suite():
 
     # suite.addTest(eec_admin_maintenance_management("test_pm_view"))
     # suite.addTest(eec_admin_maintenance_management("test_cm_view"))
-    suite.addTest(eec_admin_maintenance_management("test_pm_detail_view"))
-    suite.addTest(eec_admin_maintenance_management("test_cm_detail_view"))
+    # suite.addTest(eec_admin_maintenance_management("test_pm_detail_view"))
+    # suite.addTest(eec_admin_maintenance_management("test_cm_detail_view"))
 
     # suite.addTest(eec_admin_distribution_management("test_distribution_view"))
     # suite.addTest(eec_admin_distribution_management("test_distribution_add"))
@@ -900,6 +910,7 @@ def suite():
     # suite.addTest(eec_admin_stock_management("test_stock_add"))
     # suite.addTest(eec_admin_stock_management("test_stock_edit"))
     # suite.addTest(eec_admin_stock_management("test_stock_delete"))
+    suite.addTest(eec_admin_stock_management("test_stock_recommendation_view"))
 
     suite.addTest(eec_authentication_logout("test_logout"))
     return suite
