@@ -204,6 +204,38 @@ class eec_admin_maintenance_management(unittest.TestCase):
         tr = self.driver.find_elements(By.CSS_SELECTOR, "tr")
         self.assertGreater(len(tr), 1)
 
+    def test_pm_detail_view(self):
+        self.driver.get(constant.BASE_URL + "/home")
+        self.driver.find_element(
+            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/expertActivity']").click()
+        time.sleep(1)
+        self.driver.find_element(
+            By.CSS_SELECTOR, "a.btn-info[href='" + constant.BASE_URL + "/pm']").click()
+
+        time.sleep(1)
+        self.driver.find_elements(
+            By.CSS_SELECTOR, "a.btn.btn-info")[1].click()
+
+        time.sleep(1)
+        site = self.driver.find_elements(By.CSS_SELECTOR, "h4.card-title")[1].text
+        self.assertIsNotNone(site)
+
+    def test_cm_detail_view(self):
+        self.driver.get(constant.BASE_URL + "/home")
+        self.driver.find_element(
+            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/expertActivity']").click()
+        time.sleep(1)
+        self.driver.find_element(
+            By.CSS_SELECTOR, "a.btn-info[href='" + constant.BASE_URL + "/cm']").click()
+
+        time.sleep(1)
+        self.driver.find_elements(
+            By.CSS_SELECTOR, "a.btn.btn-info")[1].click()
+
+        time.sleep(1)
+        site = self.driver.find_elements(By.CSS_SELECTOR, "h4.card-title")[1].text
+        self.assertIsNotNone(site)
+
     def test_cm_view(self):
         self.driver.get(constant.BASE_URL + "/home")
         self.driver.find_element(
@@ -841,8 +873,10 @@ def suite():
     # suite.addTest(eec_admin_expert_management("test_expert_edit"))
     # suite.addTest(eec_admin_expert_management("test_expert_delete"))
 
-    suite.addTest(eec_admin_maintenance_management("test_pm_view"))
-    suite.addTest(eec_admin_maintenance_management("test_cm_view"))
+    # suite.addTest(eec_admin_maintenance_management("test_pm_view"))
+    # suite.addTest(eec_admin_maintenance_management("test_cm_view"))
+    suite.addTest(eec_admin_maintenance_management("test_pm_detail_view"))
+    suite.addTest(eec_admin_maintenance_management("test_cm_detail_view"))
 
     # suite.addTest(eec_admin_distribution_management("test_distribution_view"))
     # suite.addTest(eec_admin_distribution_management("test_distribution_add"))
