@@ -477,7 +477,7 @@ class eec_admin_site_radar_stock_management(unittest.TestCase):
 
         time.sleep(5)
         tr = self.driver.find_elements(By.CSS_SELECTOR, "tbody tr")
-        self.assertGreater(len(tr_element), 1)
+        self.assertGreater(len(tr), 1)
 
     def test_site_stock_add(self):
         self.driver.get(constant.BASE_URL + "/home")
