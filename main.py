@@ -2,14 +2,12 @@ import unittest
 import sys
 import time
 
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver import Keys
 from selenium.webdriver.support.select import Select
 
 import constant
+from base_test import BaseTest
 import util
 
 
@@ -19,19 +17,7 @@ def ignore_warning():
         warnings.simplefilter("ignore")
 
 
-class eec_authentication_login(unittest.TestCase):
-
-    def setUp(self):
-        service_obj = Service(constant.DRIVER_PATH)
-        chrome_opt = Options()
-        chrome_opt.binary_location = constant.CHROME_PATH
-        chrome_opt.add_argument(constant.CHROME_DATA)
-        chrome_opt.add_argument("--ignore-gpu-blocklist")
-        chrome_opt.add_experimental_option(
-            'excludeSwitches', ['enable-logging'])
-
-        self.driver = webdriver.Chrome(options=chrome_opt, service=service_obj)
-        self.driver.implicitly_wait(5)
+class AuthenticationLogin(BaseTest):
 
     def test_login(self):
         self.driver.get(constant.BASE_URL + "/home")
@@ -49,23 +35,8 @@ class eec_authentication_login(unittest.TestCase):
         self.assertEqual(cur_url, constant.BASE_URL + "/home")
         # self.assertEqual(cur_url, constant.BASE_URL + "/")
 
-    def tearDown(self):
-        self.driver.close()
 
-
-class eec_authentication_logout(unittest.TestCase):
-
-    def setUp(self):
-        service_obj = Service(constant.DRIVER_PATH)
-        chrome_opt = Options()
-        chrome_opt.binary_location = constant.CHROME_PATH
-        chrome_opt.add_argument(constant.CHROME_DATA)
-        chrome_opt.add_argument("--ignore-gpu-blocklist")
-        chrome_opt.add_experimental_option(
-            'excludeSwitches', ['enable-logging'])
-
-        self.driver = webdriver.Chrome(options=chrome_opt, service=service_obj)
-        self.driver.implicitly_wait(5)
+class AuthenticationLogout(BaseTest):
 
     # @unittest.skipIf(test_login, "test_login is running")
     def test_logout(self):
@@ -85,19 +56,7 @@ class eec_authentication_logout(unittest.TestCase):
         self.driver.quit()
 
 
-class eec_admin_management(unittest.TestCase):
-
-    def setUp(self):
-        service_obj = Service(constant.DRIVER_PATH)
-        chrome_opt = Options()
-        chrome_opt.binary_location = constant.CHROME_PATH
-        chrome_opt.add_argument(constant.CHROME_DATA)
-        chrome_opt.add_argument("--ignore-gpu-blocklist")
-        chrome_opt.add_experimental_option(
-            'excludeSwitches', ['enable-logging'])
-
-        self.driver = webdriver.Chrome(options=chrome_opt, service=service_obj)
-        self.driver.implicitly_wait(5)
+class PasswordEdit(BaseTest):
 
     def test_admin_password_edit(self):
         self.driver.get(constant.BASE_URL + "/home")
@@ -125,23 +84,8 @@ class eec_admin_management(unittest.TestCase):
             By.CSS_SELECTOR, "span[data-notify='message']").text
         self.assertEqual(message, "Password has succesfully changed!")
 
-    def tearDown(self):
-        self.driver.close()
 
-
-class eec_admin_account_management(unittest.TestCase):
-
-    def setUp(self):
-        service_obj = Service(constant.DRIVER_PATH)
-        chrome_opt = Options()
-        chrome_opt.binary_location = constant.CHROME_PATH
-        chrome_opt.add_argument(constant.CHROME_DATA)
-        chrome_opt.add_argument("--ignore-gpu-blocklist")
-        chrome_opt.add_experimental_option(
-            'excludeSwitches', ['enable-logging'])
-
-        self.driver = webdriver.Chrome(options=chrome_opt, service=service_obj)
-        self.driver.implicitly_wait(5)
+class AccountManagement(BaseTest):
 
     def test_account_verify(self):
         self.driver.get(constant.BASE_URL + "/home")
@@ -174,23 +118,8 @@ class eec_admin_account_management(unittest.TestCase):
             By.CSS_SELECTOR, "span[data-notify='message']").text
         self.assertEqual(message, "Data Deleted!")
 
-    def tearDown(self):
-        self.driver.close()
 
-
-class eec_admin_maintenance_management(unittest.TestCase):
-
-    def setUp(self):
-        service_obj = Service(constant.DRIVER_PATH)
-        chrome_opt = Options()
-        chrome_opt.binary_location = constant.CHROME_PATH
-        chrome_opt.add_argument(constant.CHROME_DATA)
-        chrome_opt.add_argument("--ignore-gpu-blocklist")
-        chrome_opt.add_experimental_option(
-            'excludeSwitches', ['enable-logging'])
-
-        self.driver = webdriver.Chrome(options=chrome_opt, service=service_obj)
-        self.driver.implicitly_wait(5)
+class MaintenanceManagement(BaseTest):
 
     def test_pm_view(self):
         self.driver.get(constant.BASE_URL + "/home")
@@ -217,7 +146,8 @@ class eec_admin_maintenance_management(unittest.TestCase):
             By.CSS_SELECTOR, "a.btn.btn-info")[1].click()
 
         time.sleep(1)
-        site = self.driver.find_elements(By.CSS_SELECTOR, "h4.card-title")[1].text
+        site = self.driver.find_elements(
+            By.CSS_SELECTOR, "h4.card-title")[1].text
         self.assertIsNotNone(site)
 
     def test_cm_detail_view(self):
@@ -233,7 +163,8 @@ class eec_admin_maintenance_management(unittest.TestCase):
             By.CSS_SELECTOR, "a.btn.btn-info")[1].click()
 
         time.sleep(1)
-        site = self.driver.find_elements(By.CSS_SELECTOR, "h4.card-title")[1].text
+        site = self.driver.find_elements(
+            By.CSS_SELECTOR, "h4.card-title")[1].text
         self.assertIsNotNone(site)
 
     def test_cm_view(self):
@@ -248,23 +179,8 @@ class eec_admin_maintenance_management(unittest.TestCase):
         tr = self.driver.find_elements(By.CSS_SELECTOR, "tr")
         self.assertGreater(len(tr), 1)
 
-    def tearDown(self):
-        self.driver.close()
 
-
-class eec_admin_expert_management(unittest.TestCase):
-
-    def setUp(self):
-        service_obj = Service(constant.DRIVER_PATH)
-        chrome_opt = Options()
-        chrome_opt.binary_location = constant.CHROME_PATH
-        chrome_opt.add_argument(constant.CHROME_DATA)
-        chrome_opt.add_argument("--ignore-gpu-blocklist")
-        chrome_opt.add_experimental_option(
-            'excludeSwitches', ['enable-logging'])
-
-        self.driver = webdriver.Chrome(options=chrome_opt, service=service_obj)
-        self.driver.implicitly_wait(5)
+class ExpertManagement(BaseTest):
 
     def test_expert_view(self):
         self.driver.get(constant.BASE_URL + "/home")
@@ -369,23 +285,8 @@ class eec_admin_expert_management(unittest.TestCase):
         self.assertEqual(self.driver.find_element(
             By.CSS_SELECTOR, "span[data-notify='message']").text, "Data Deleted!")
 
-    def tearDown(self):
-        self.driver.close()
 
-
-class eec_admin_site_radar_management(unittest.TestCase):
-
-    def setUp(self):
-        service_obj = Service(constant.DRIVER_PATH)
-        chrome_opt = Options()
-        chrome_opt.binary_location = constant.CHROME_PATH
-        chrome_opt.add_argument(constant.CHROME_DATA)
-        chrome_opt.add_argument("--ignore-gpu-blocklist")
-        chrome_opt.add_experimental_option(
-            'excludeSwitches', ['enable-logging'])
-
-        self.driver = webdriver.Chrome(options=chrome_opt, service=service_obj)
-        self.driver.implicitly_wait(5)
+class SiteRadarManagement(BaseTest):
 
     def test_site_view(self):
         self.driver.get(constant.BASE_URL + "/home")
@@ -445,23 +346,8 @@ class eec_admin_site_radar_management(unittest.TestCase):
             By.CSS_SELECTOR, "span[data-notify='message']").text
         self.assertEqual(message, "Data Deleted!")
 
-    def tearDown(self):
-        self.driver.close()
 
-
-class eec_admin_site_radar_stock_management(unittest.TestCase):
-
-    def setUp(self):
-        service_obj = Service(constant.DRIVER_PATH)
-        chrome_opt = Options()
-        chrome_opt.binary_location = constant.CHROME_PATH
-        chrome_opt.add_argument(constant.CHROME_DATA)
-        chrome_opt.add_argument("--ignore-gpu-blocklist")
-        chrome_opt.add_experimental_option(
-            'excludeSwitches', ['enable-logging'])
-
-        self.driver = webdriver.Chrome(options=chrome_opt, service=service_obj)
-        self.driver.implicitly_wait(5)
+class SiteRadarStockManagement(BaseTest):
 
     def test_site_stock_view(self):
         self.driver.get(constant.BASE_URL + "/home")
@@ -603,23 +489,8 @@ class eec_admin_site_radar_stock_management(unittest.TestCase):
             By.CSS_SELECTOR, "span[data-notify='message']").text
         self.assertEqual(message, "Data Deleted!")
 
-    def tearDown(self):
-        self.driver.close()
 
-
-class eec_admin_stock_management(unittest.TestCase):
-
-    def setUp(self):
-        service_obj = Service(constant.DRIVER_PATH)
-        chrome_opt = Options()
-        chrome_opt.binary_location = constant.CHROME_PATH
-        chrome_opt.add_argument(constant.CHROME_DATA)
-        chrome_opt.add_argument("--ignore-gpu-blocklist")
-        chrome_opt.add_experimental_option(
-            'excludeSwitches', ['enable-logging'])
-
-        self.driver = webdriver.Chrome(options=chrome_opt, service=service_obj)
-        self.driver.implicitly_wait(5)
+class StockManagement(BaseTest):
 
     def test_stock_view(self):
         self.driver.get(constant.BASE_URL + "/home")
@@ -763,23 +634,8 @@ class eec_admin_stock_management(unittest.TestCase):
         tr = self.driver.find_elements(By.CSS_SELECTOR, "tr")
         self.assertGreater(len(tr), 1)
 
-    def tearDown(self):
-        self.driver.close()
 
-
-class eec_admin_distribution_management(unittest.TestCase):
-
-    def setUp(self):
-        service_obj = Service(constant.DRIVER_PATH)
-        chrome_opt = Options()
-        chrome_opt.binary_location = constant.CHROME_PATH
-        chrome_opt.add_argument(constant.CHROME_DATA)
-        chrome_opt.add_argument("--ignore-gpu-blocklist")
-        chrome_opt.add_experimental_option(
-            'excludeSwitches', ['enable-logging'])
-
-        self.driver = webdriver.Chrome(options=chrome_opt, service=service_obj)
-        self.driver.implicitly_wait(5)
+class DistributionManagement(BaseTest):
 
     def test_distribution_view(self):
         self.driver.get(constant.BASE_URL + "/home")
@@ -864,55 +720,52 @@ class eec_admin_distribution_management(unittest.TestCase):
             By.CSS_SELECTOR, "span[data-notify='message']").text
         self.assertEqual(message, "Data Deleted!")
 
-    def tearDown(self):
-        self.driver.close()
-
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(eec_authentication_login("test_login"))
+    suite.addTest(AuthenticationLogin("test_login"))
 
-    # suite.addTest(eec_admin_management("test_admin_password_edit"))
+    # suite.addTest(PasswordEdit("test_admin_password_edit"))
 
-    # suite.addTest(eec_admin_account_management("test_account_verify"))
-    # suite.addTest(eec_admin_account_management("test_account_delete"))
+    # suite.addTest(AccountManagement("test_account_verify"))
+    # suite.addTest(AccountManagement("test_account_delete"))
 
-    # suite.addTest(eec_admin_expert_management("test_expert_view"))
-    # suite.addTest(eec_admin_expert_management("test_expert_add_not_eec"))
-    # suite.addTest(eec_admin_expert_management("test_expert_add_eec"))
-    # suite.addTest(eec_admin_expert_management("test_expert_edit"))
-    # suite.addTest(eec_admin_expert_management("test_expert_delete"))
+    # suite.addTest(ExpertManagement("test_expert_view"))
+    # suite.addTest(ExpertManagement("test_expert_add_not_eec"))
+    # suite.addTest(ExpertManagement("test_expert_add_eec"))
+    # suite.addTest(ExpertManagement("test_expert_edit"))
+    # suite.addTest(ExpertManagement("test_expert_delete"))
 
-    # suite.addTest(eec_admin_maintenance_management("test_pm_view"))
-    # suite.addTest(eec_admin_maintenance_management("test_cm_view"))
-    # suite.addTest(eec_admin_maintenance_management("test_pm_detail_view"))
-    # suite.addTest(eec_admin_maintenance_management("test_cm_detail_view"))
+    # suite.addTest(MaintenanceManagement("test_pm_view"))
+    # suite.addTest(MaintenanceManagement("test_cm_view"))
+    # suite.addTest(MaintenanceManagement("test_pm_detail_view"))
+    # suite.addTest(MaintenanceManagement("test_cm_detail_view"))
 
-    # suite.addTest(eec_admin_distribution_management("test_distribution_view"))
-    # suite.addTest(eec_admin_distribution_management("test_distribution_add"))
-    # suite.addTest(eec_admin_distribution_management("test_distribution_edit"))
-    # suite.addTest(eec_admin_distribution_management(
+    # suite.addTest(DistributionManagement("test_distribution_view"))
+    # suite.addTest(DistributionManagement("test_distribution_add"))
+    # suite.addTest(DistributionManagement("test_distribution_edit"))
+    # suite.addTest(DistributionManagement(
     #     "test_distribution_delete"))
 
-    # suite.addTest(eec_admin_site_radar_management("test_site_view"))
-    # suite.addTest(eec_admin_site_radar_management("test_site_add"))
-    # suite.addTest(eec_admin_site_radar_management("test_site_delete"))
+    # suite.addTest(SiteRadarManagement("test_site_view"))
+    # suite.addTest(SiteRadarManagement("test_site_add"))
+    # suite.addTest(SiteRadarManagement("test_site_delete"))
 
-    # suite.addTest(eec_admin_site_radar_stock_management(
+    # suite.addTest(SiteRadarStockManagement(
     #     "test_site_stock_view"))
-    # suite.addTest(eec_admin_site_radar_stock_management("test_site_stock_add"))
-    # suite.addTest(eec_admin_site_radar_stock_management(
+    # suite.addTest(SiteRadarStockManagement("test_site_stock_add"))
+    # suite.addTest(SiteRadarStockManagement(
     #     "test_site_stock_edit"))
-    # suite.addTest(eec_admin_site_radar_stock_management(
+    # suite.addTest(SiteRadarStockManagement(
     #     "test_site_stock_delete"))
 
-    # suite.addTest(eec_admin_stock_management("test_stock_view"))
-    # suite.addTest(eec_admin_stock_management("test_stock_add"))
-    # suite.addTest(eec_admin_stock_management("test_stock_edit"))
-    # suite.addTest(eec_admin_stock_management("test_stock_delete"))
-    suite.addTest(eec_admin_stock_management("test_stock_recommendation_view"))
+    # suite.addTest(StockManagement("test_stock_view"))
+    # suite.addTest(StockManagement("test_stock_add"))
+    # suite.addTest(StockManagement("test_stock_edit"))
+    # suite.addTest(StockManagement("test_stock_delete"))
+    # suite.addTest(StockManagement("test_stock_recommendation_view"))
 
-    suite.addTest(eec_authentication_logout("test_logout"))
+    suite.addTest(AuthenticationLogout("test_logout"))
     return suite
 
 
