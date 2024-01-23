@@ -45,7 +45,7 @@ class AuthenticationLogout(BaseTest):
 
 class PasswordEdit(BaseTest):
 
-    def test_admin_password_edit(self):
+    def test_edit_password(self):
         profile_page = ProfilePage(self.driver)
         profile_page.edit_password(constant.PASSWORD, constant.NEW_PASSWORD)
         message = self.driver.find_element(
@@ -55,33 +55,18 @@ class PasswordEdit(BaseTest):
 
 class AccountManagement(BaseTest):
 
-    def test_account_verify(self):
-        self.driver.get(constant.BASE_URL + "/home")
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/userManagement']").click()
-        self.driver.get(constant.BASE_URL + "/userManagement")
-        time.sleep(1)
-        self.driver.find_element(
-            By.CSS_SELECTOR, "button.btn-warning").click()
-        time.sleep(1)
-        self.driver.switch_to.alert.accept()
+    def test_verify_account(self):
+        account_page = AccountPage(self.driver)
+        account_page.verify_account()
 
-        time.sleep(5)
         message = self.driver.find_element(
             By.CSS_SELECTOR, "span[data-notify='message']").text
         self.assertEqual(message, "User Approved")
 
-    def test_account_delete(self):
-        self.driver.get(constant.BASE_URL + "/home")
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/userManagement']").click()
-        time.sleep(1)
-        self.driver.find_elements(
-            By.CSS_SELECTOR, "button.btn-danger")[1].click()
-        time.sleep(1)
-        self.driver.switch_to.alert.accept()
+    def test_delete_account(self):
+        account_page = AccountPage(self.driver)
+        account_page.delete_account()
 
-        time.sleep(5)
         message = self.driver.find_element(
             By.CSS_SELECTOR, "span[data-notify='message']").text
         self.assertEqual(message, "Data Deleted!")
@@ -693,10 +678,10 @@ def suite():
     suite = unittest.TestSuite()
     suite.addTest(AuthenticationLogin("test_login"))
 
-    suite.addTest(PasswordEdit("test_admin_password_edit"))
+    # suite.addTest(PasswordEdit("test_edit_password"))
 
-    # suite.addTest(AccountManagement("test_account_verify"))
-    # suite.addTest(AccountManagement("test_account_delete"))
+    suite.addTest(AccountManagement("test_verify_account"))
+    suite.addTest(AccountManagement("test_delete_account"))
 
     # suite.addTest(ExpertManagement("test_expert_view"))
     # suite.addTest(ExpertManagement("test_expert_add_not_eec"))
