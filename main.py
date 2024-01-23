@@ -8,6 +8,7 @@ from selenium.webdriver.support.select import Select
 
 import constant
 from base_test import BaseTest
+from pages import *
 import util
 
 
@@ -20,32 +21,18 @@ def ignore_warning():
 class AuthenticationLogin(BaseTest):
 
     def test_login(self):
-        self.driver.get(constant.BASE_URL + "/home")
-        self.driver.find_element(
-            By.CSS_SELECTOR, "input.form-control[type='email']").send_keys("admin@eecid.com")
-        self.driver.find_element(
-            By.CSS_SELECTOR, "input.form-control[type='password']").send_keys("secret")
-        button = self.driver.find_element(
-            By.CSS_SELECTOR, "button.btn[type='submit']")
-        button.location_once_scrolled_into_view
-        button.click()
+        login_page = LoginPage(self.driver)
+        login_page.login(constant.EMAIL, constant.PASSWORD)
 
-        # assert the next page have the word "Dashboard admin"
         cur_url = self.driver.current_url
         self.assertEqual(cur_url, constant.BASE_URL + "/home")
-        # self.assertEqual(cur_url, constant.BASE_URL + "/")
 
 
 class AuthenticationLogout(BaseTest):
 
-    # @unittest.skipIf(test_login, "test_login is running")
     def test_logout(self):
-        self.driver.get(constant.BASE_URL + "/home")
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.nav-link#navbarDropdownProfile").click()
-        time.sleep(1)
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.dropdown-item[href='" + constant.BASE_URL + "/logout']").click()
+        login_page = LoginPage(self.driver)
+        login_page.logout()
 
         cur_url = self.driver.current_url
         self.assertEqual(cur_url, constant.BASE_URL + "/login")
@@ -59,27 +46,8 @@ class AuthenticationLogout(BaseTest):
 class PasswordEdit(BaseTest):
 
     def test_admin_password_edit(self):
-        self.driver.get(constant.BASE_URL + "/home")
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.nav-link#navbarDropdownProfile").click()
-        time.sleep(1)
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.dropdown-item[href='" + constant.BASE_URL + "/profile']").click()
-
-        time.sleep(1)
-        self.driver.find_element(
-            By.ID, "input-current-password").send_keys("secret")
-        self.driver.find_element(
-            By.ID, "input-password").send_keys("secret1")
-        self.driver.find_element(
-            By.ID, "input-password-confirmation").send_keys("secret1")
-
-        button = self.driver.find_element(
-            By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']")
-        button.location_once_scrolled_into_view
-        button.click()
-
-        time.sleep(5)
+        profile_page = ProfilePage(self.driver)
+        profile_page.edit_password(constant.PASSWORD, constant.NEW_PASSWORD)
         message = self.driver.find_element(
             By.CSS_SELECTOR, "span[data-notify='message']").text
         self.assertEqual(message, "Password has succesfully changed!")
@@ -725,7 +693,7 @@ def suite():
     suite = unittest.TestSuite()
     suite.addTest(AuthenticationLogin("test_login"))
 
-    # suite.addTest(PasswordEdit("test_admin_password_edit"))
+    suite.addTest(PasswordEdit("test_admin_password_edit"))
 
     # suite.addTest(AccountManagement("test_account_verify"))
     # suite.addTest(AccountManagement("test_account_delete"))

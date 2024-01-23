@@ -23,4 +23,4 @@ class BaseTest(unittest.TestCase):
         self.driver.implicitly_wait(5)
 
     def tearDown(self):
-        return self.driver.close()
+        self.driver.close()
