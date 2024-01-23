@@ -6,6 +6,7 @@ from selenium.webdriver import Keys as SeleniumKeys
 from selenium.webdriver.support.select import Select as SeleniumSelect
 
 import constant
+import util
 
 
 class BasePage:
@@ -13,6 +14,7 @@ class BasePage:
         self.driver = driver
         self.time = time
         self.constant = constant
+        self.util = util
         self.By = SeleniumBy
         self.Keys = SeleniumKeys
         self.Select = SeleniumSelect
@@ -25,3 +27,7 @@ class BasePage:
             self.By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']")
         button.location_once_scrolled_into_view
         button.click()
+
+    def get_message(self):
+        return self.driver.find_element(
+            self.By.CSS_SELECTOR, "span[data-notify='message']").text

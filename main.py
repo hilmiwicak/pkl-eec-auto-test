@@ -3,7 +3,6 @@ import sys
 import time
 
 from selenium.webdriver.common.by import By
-from selenium.webdriver import Keys
 from selenium.webdriver.support.select import Select
 
 import constant
@@ -48,8 +47,7 @@ class PasswordEdit(BaseTest):
     def test_edit_password(self):
         profile_page = ProfilePage(self.driver)
         profile_page.edit_password(constant.PASSWORD, constant.NEW_PASSWORD)
-        message = self.driver.find_element(
-            By.CSS_SELECTOR, "span[data-notify='message']").text
+        message = profile_page.get_message()
         self.assertEqual(message, "Password has succesfully changed!")
 
 
@@ -59,16 +57,14 @@ class AccountManagement(BaseTest):
         account_page = AccountPage(self.driver)
         account_page.verify_account()
 
-        message = self.driver.find_element(
-            By.CSS_SELECTOR, "span[data-notify='message']").text
+        message = account_page.get_message()
         self.assertEqual(message, "User Approved")
 
     def test_delete_account(self):
         account_page = AccountPage(self.driver)
         account_page.delete_account()
 
-        message = self.driver.find_element(
-            By.CSS_SELECTOR, "span[data-notify='message']").text
+        message = account_page.get_message()
         self.assertEqual(message, "Data Deleted!")
 
 
@@ -108,107 +104,39 @@ class MaintenanceManagement(BaseTest):
 class ExpertManagement(BaseTest):
 
     def test_view_expert(self):
-        self.driver.get(constant.BASE_URL + "/home")
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/expertManagement']").click()
-        time.sleep(1)
+        expert_page = ExpertPage(self.driver)
+        expert_page.view_expert()
 
         tr = self.driver.find_elements(By.CSS_SELECTOR, "tr")
         self.assertGreater(len(tr), 1)
 
-    def test_expert_add_not_eec(self):
-        self.driver.get(constant.BASE_URL + "/home")
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/expertManagement']").click()
-        # add_element = self.driver.find_element(
-        #     By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/expertManagement']")
-        # self.driver.execute_script("arguments[0].click();", add_element)
-        time.sleep(1)
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.btn-primary").click()
-        time.sleep(1)
-        self.driver.find_element(
-            By.ID, "name").send_keys("Test Name")
-        self.driver.find_element(
-            By.ID, "nip").send_keys(util.random_nip_16())
-        self.driver.find_element(
-            By.ID, "expert_company").send_keys("Test Company")
-        button = self.driver.find_element(
-            By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']")
-        button.location_once_scrolled_into_view
-        button.click()
-        self.driver.switch_to.alert.accept()
+    def test_add_not_eec_expert(self):
+        expert_page = ExpertPage(self.driver)
+        expert_page.add_not_eec_expert("Test Not EEC", util.random_nip_16(), "Test Company")
 
-        time.sleep(5)
-        message = self.driver.find_element(
-            By.CSS_SELECTOR, "span[data-notify='message']").text
+        message = expert_page.get_message()
         self.assertEqual(message, "Data Created!")
 
-    def test_expert_add_eec(self):
-        self.driver.get(constant.BASE_URL + "/home")
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/expertManagement']").click()
-        time.sleep(1)
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.btn-primary").click()
-        time.sleep(1)
-        self.driver.find_element(
-            By.ID, "name").send_keys("Test Name")
-        self.driver.find_element(
-            By.ID, "nip").send_keys(util.random_nip_11())
-        self.driver.find_element(By.ID, "eec_expert").click()
-        button = self.driver.find_element(
-            By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']")
-        button.location_once_scrolled_into_view
-        button.click()
-        self.driver.switch_to.alert.accept()
+    def test_add_eec_expert(self):
+        expert_page = ExpertPage(self.driver)
+        expert_page.add_eec_expert("Test EEC Name", util.random_nip_11())
 
-        time.sleep(5)
-        message = self.driver.find_element(
-            By.CSS_SELECTOR, "span[data-notify='message']").text
+        message = expert_page.get_message()
         self.assertEqual(message, "Data Created!")
 
-    def test_expert_edit(self):
-        self.driver.get(constant.BASE_URL + "/home")
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/expertManagement']").click()
-        time.sleep(1)
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.btn.btn-warning").click()
-        time.sleep(1)
-        name_input_element = self.driver.find_element(
-            By.ID, "name")
-        name_input_element.clear()
-        name_input_element.send_keys("Test Name")
+    def test_edit_expert(self):
+        expert_page = ExpertPage(self.driver)
+        expert_page.edit_expert("Test Name Edit", util.random_nip_16())
 
-        nip_input_element = self.driver.find_element(
-            By.ID, "nip")
-        nip_input_element.send_keys(Keys.BACKSPACE)
-        nip_input_element.send_keys("1")
+        message = expert_page.get_message()
+        self.assertEqual(message, "Data Updated!")
 
-        button = self.driver.find_element(
-            By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']")
-        button.location_once_scrolled_into_view
-        button.click()
-        self.driver.switch_to.alert.accept()
+    def test_delete_expert(self):
+        expert_page = ExpertPage(self.driver)
+        expert_page.delete_expert()
 
-        time.sleep(5)
-        self.assertEqual(self.driver.find_element(
-            By.CSS_SELECTOR, "span[data-notify='message']").text, "Data Updated!")
-
-    def test_expert_delete(self):
-        self.driver.get(constant.BASE_URL + "/home")
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/expertManagement']").click()
-        time.sleep(1)
-        self.driver.find_element(
-            By.CSS_SELECTOR, "button.btn.btn-danger").click()
-        time.sleep(1)
-        self.driver.switch_to.alert.accept()
-
-        time.sleep(5)
-        self.assertEqual(self.driver.find_element(
-            By.CSS_SELECTOR, "span[data-notify='message']").text, "Data Deleted!")
+        message = expert_page.get_message()
+        self.assertEqual(message, "Data Deleted!")
 
 
 class SiteRadarManagement(BaseTest):
@@ -655,16 +583,16 @@ def suite():
     # suite.addTest(AccountManagement("test_verify_account"))
     # suite.addTest(AccountManagement("test_delete_account"))
 
-    suite.addTest(MaintenanceManagement("test_view_pm"))
-    suite.addTest(MaintenanceManagement("test_view_cm"))
-    suite.addTest(MaintenanceManagement("test_view_detail_pm"))
-    suite.addTest(MaintenanceManagement("test_view_detail_cm"))
+    # suite.addTest(MaintenanceManagement("test_view_pm"))
+    # suite.addTest(MaintenanceManagement("test_view_cm"))
+    # suite.addTest(MaintenanceManagement("test_view_detail_pm"))
+    # suite.addTest(MaintenanceManagement("test_view_detail_cm"))
 
-    # suite.addTest(ExpertManagement("test_expert_view"))
-    # suite.addTest(ExpertManagement("test_expert_add_not_eec"))
-    # suite.addTest(ExpertManagement("test_expert_add_eec"))
-    # suite.addTest(ExpertManagement("test_expert_edit"))
-    # suite.addTest(ExpertManagement("test_expert_delete"))
+    suite.addTest(ExpertManagement("test_view_expert"))
+    suite.addTest(ExpertManagement("test_add_not_eec_expert"))
+    suite.addTest(ExpertManagement("test_add_eec_expert"))
+    suite.addTest(ExpertManagement("test_edit_expert"))
+    suite.addTest(ExpertManagement("test_delete_expert"))
 
     # suite.addTest(DistributionManagement("test_distribution_view"))
     # suite.addTest(DistributionManagement("test_distribution_add"))
