@@ -74,68 +74,40 @@ class AccountManagement(BaseTest):
 
 class MaintenanceManagement(BaseTest):
 
-    def test_pm_view(self):
-        self.driver.get(constant.BASE_URL + "/home")
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/expertActivity']").click()
-        time.sleep(1)
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.btn-info[href='" + constant.BASE_URL + "/pm']").click()
+    def test_view_pm(self):
+        pm_page = MaintenancePage(self.driver)
+        pm_page.view_pm()
 
-        time.sleep(1)
         tr = self.driver.find_elements(By.CSS_SELECTOR, "tr")
         self.assertGreater(len(tr), 1)
 
-    def test_pm_detail_view(self):
-        self.driver.get(constant.BASE_URL + "/home")
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/expertActivity']").click()
-        time.sleep(1)
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.btn-info[href='" + constant.BASE_URL + "/pm']").click()
+    def test_view_detail_pm(self):
+        pm_page = MaintenancePage(self.driver)
+        pm_page.view_detail_pm()
 
-        time.sleep(1)
-        self.driver.find_elements(
-            By.CSS_SELECTOR, "a.btn.btn-info")[1].click()
-
-        time.sleep(1)
         site = self.driver.find_elements(
             By.CSS_SELECTOR, "h4.card-title")[1].text
         self.assertIsNotNone(site)
 
-    def test_cm_detail_view(self):
-        self.driver.get(constant.BASE_URL + "/home")
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/expertActivity']").click()
-        time.sleep(1)
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.btn-info[href='" + constant.BASE_URL + "/cm']").click()
+    def test_view_cm(self):
+        cm_page = MaintenancePage(self.driver)
+        cm_page.view_cm()
 
-        time.sleep(1)
-        self.driver.find_elements(
-            By.CSS_SELECTOR, "a.btn.btn-info")[1].click()
+        tr = self.driver.find_elements(By.CSS_SELECTOR, "tr")
+        self.assertGreater(len(tr), 1)
 
-        time.sleep(1)
+    def test_view_detail_cm(self):
+        cm_page = MaintenancePage(self.driver)
+        cm_page.view_detail_cm()
+
         site = self.driver.find_elements(
             By.CSS_SELECTOR, "h4.card-title")[1].text
         self.assertIsNotNone(site)
-
-    def test_cm_view(self):
-        self.driver.get(constant.BASE_URL + "/home")
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/expertActivity']").click()
-        time.sleep(1)
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.btn-info[href='" + constant.BASE_URL + "/cm']").click()
-
-        time.sleep(1)
-        tr = self.driver.find_elements(By.CSS_SELECTOR, "tr")
-        self.assertGreater(len(tr), 1)
 
 
 class ExpertManagement(BaseTest):
 
-    def test_expert_view(self):
+    def test_view_expert(self):
         self.driver.get(constant.BASE_URL + "/home")
         self.driver.find_element(
             By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/expertManagement']").click()
@@ -680,19 +652,19 @@ def suite():
 
     # suite.addTest(PasswordEdit("test_edit_password"))
 
-    suite.addTest(AccountManagement("test_verify_account"))
-    suite.addTest(AccountManagement("test_delete_account"))
+    # suite.addTest(AccountManagement("test_verify_account"))
+    # suite.addTest(AccountManagement("test_delete_account"))
+
+    suite.addTest(MaintenanceManagement("test_view_pm"))
+    suite.addTest(MaintenanceManagement("test_view_cm"))
+    suite.addTest(MaintenanceManagement("test_view_detail_pm"))
+    suite.addTest(MaintenanceManagement("test_view_detail_cm"))
 
     # suite.addTest(ExpertManagement("test_expert_view"))
     # suite.addTest(ExpertManagement("test_expert_add_not_eec"))
     # suite.addTest(ExpertManagement("test_expert_add_eec"))
     # suite.addTest(ExpertManagement("test_expert_edit"))
     # suite.addTest(ExpertManagement("test_expert_delete"))
-
-    # suite.addTest(MaintenanceManagement("test_pm_view"))
-    # suite.addTest(MaintenanceManagement("test_cm_view"))
-    # suite.addTest(MaintenanceManagement("test_pm_detail_view"))
-    # suite.addTest(MaintenanceManagement("test_cm_detail_view"))
 
     # suite.addTest(DistributionManagement("test_distribution_view"))
     # suite.addTest(DistributionManagement("test_distribution_add"))

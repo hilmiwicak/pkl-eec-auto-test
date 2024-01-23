@@ -1,5 +1,6 @@
 import time
 
+from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.common.by import By as SeleniumBy
 from selenium.webdriver import Keys as SeleniumKeys
 from selenium.webdriver.support.select import Select as SeleniumSelect
@@ -8,7 +9,7 @@ import constant
 
 
 class BasePage:
-    def __init__(self, driver):
+    def __init__(self, driver: WebDriver):
         self.driver = driver
         self.time = time
         self.constant = constant

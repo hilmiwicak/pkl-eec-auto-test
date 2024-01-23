@@ -14,6 +14,8 @@ class LoginPage(BasePage):
         super().open_home()
         self.driver.find_element(
             self.By.CSS_SELECTOR, "a.nav-link#navbarDropdownProfile").click()
-        self.time.sleep(1)
+        self.time.sleep(500/1000)
         self.driver.find_element(
-            self.By.CSS_SELECTOR, "a.dropdown-item[href='" + self.constant.BASE_URL + "/logout']").click()
+            self.By.CSS_SELECTOR, "a.dropdown-item[href='" +
+            self.constant.BASE_URL + "/logout']"
+        ).click()
