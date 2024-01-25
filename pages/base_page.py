@@ -29,5 +29,6 @@ class BasePage:
         button.click()
 
     def get_message(self):
+        self.time.sleep(3)
         return self.driver.find_element(
             self.By.CSS_SELECTOR, "span[data-notify='message']").text

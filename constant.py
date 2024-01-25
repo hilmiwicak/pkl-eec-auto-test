@@ -9,3 +9,7 @@ PASSWORD = "secret"
 NEW_PASSWORD = "secret1"
 
 EXPERT_NAME = "Test EEC Name"
+
+SITE_IMAGE_PATH = r"C:\Users\Hilmi\dev-projects\skripsi-selenium\skripsi-src\resources\radar.jpeg"
+SITE_LOCATION = "Test Location"
+

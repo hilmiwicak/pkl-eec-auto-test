@@ -173,61 +173,26 @@ class DistributionManagement(BaseTest):
 
 class SiteRadarManagement(BaseTest):
 
-    def test_site_view(self):
-        self.driver.get(constant.BASE_URL + "/home")
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/site']").click()
+    def test_view_site(self):
+        site_radar_page = SiteRadarPage(self.driver)
+        site_radar_page.view_site()
 
         card_list = self.driver.find_elements(
             By.CSS_SELECTOR, ".row .col-lg-4.col-md-6.col-sm-6")
         self.assertGreater(len(card_list), 0)
 
-    def test_site_add(self):
-        self.driver.get(constant.BASE_URL + "/home")
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/site']").click()
-        time.sleep(1)
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.btn-primary").click()
-        time.sleep(1)
-        self.driver.find_element(
-            By.ID, "radar_name").send_keys("Test Radar Site")
-        self.driver.find_element(
-            By.ID, "station_id").send_keys("Test Location")
-        self.driver.find_element(By.ID, "image").send_keys(
-            r"C:\Users\Hilmi\dev-projects\skripsi-selenium\skripsi-src\resources\radar.jpeg")
+    def test_add_site(self):
+        site_radar_page = SiteRadarPage(self.driver)
+        site_radar_page.add_site()
 
-        stock_site_element = self.driver.find_element(
-            By.CSS_SELECTOR, "select.form-control.site")
-        stock_site_select = Select(stock_site_element)
-        stock_site_select.select_by_index(1)
-
-        button = self.driver.find_element(
-            By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']")
-        button.location_once_scrolled_into_view
-        button.click()
-        self.driver.switch_to.alert.accept()
-
-        time.sleep(5)
-        message = self.driver.find_element(
-            By.CSS_SELECTOR, "span[data-notify='message']").text
+        message = site_radar_page.get_message()
         self.assertEqual(message, "Data Created!")
 
-    def test_site_delete(self):
-        self.driver.get(constant.BASE_URL + "/home")
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/site']").click()
-        time.sleep(1)
-        card_element = self.driver.find_element(
-            By.XPATH, "//strong[contains(text(),'Test Location')]/ancestor::div[contains(@class, 'card card-stats')]")
-        card_element.find_element(
-            By.XPATH, "//button[contains(@class, 'btn-danger')]").click()
-        time.sleep(1)
-        self.driver.switch_to.alert.accept()
+    def test_delete_site(self):
+        site_radar_page = SiteRadarPage(self.driver)
+        site_radar_page.delete_site()
 
-        time.sleep(5)
-        message = self.driver.find_element(
-            By.CSS_SELECTOR, "span[data-notify='message']").text
+        message = site_radar_page.get_message()
         self.assertEqual(message, "Data Deleted!")
 
 
@@ -542,12 +507,12 @@ def suite():
     # suite.addTest(DistributionManagement("test_view_distribution"))
     # suite.addTest(DistributionManagement("test_add_distribution"))
     # suite.addTest(DistributionManagement("test_edit_distribution"))
-    suite.addTest(DistributionManagement(
-        "test_delete_distribution"))
+    # suite.addTest(DistributionManagement(
+    #     "test_delete_distribution"))
 
-    # suite.addTest(SiteRadarManagement("test_site_view"))
-    # suite.addTest(SiteRadarManagement("test_site_add"))
-    # suite.addTest(SiteRadarManagement("test_site_delete"))
+    suite.addTest(SiteRadarManagement("test_view_site"))
+    suite.addTest(SiteRadarManagement("test_add_site"))
+    suite.addTest(SiteRadarManagement("test_delete_site"))
 
     # suite.addTest(SiteRadarStockManagement(
     #     "test_site_stock_view"))
