@@ -47,6 +47,7 @@ class PasswordEdit(BaseTest):
     def test_edit_password(self):
         profile_page = ProfilePage(self.driver)
         profile_page.edit_password(constant.PASSWORD, constant.NEW_PASSWORD)
+
         message = profile_page.get_message()
         self.assertEqual(message, "Password has succesfully changed!")
 
@@ -112,21 +113,21 @@ class ExpertManagement(BaseTest):
 
     def test_add_not_eec_expert(self):
         expert_page = ExpertPage(self.driver)
-        expert_page.add_not_eec_expert("Test Not EEC", util.random_nip_16(), "Test Company")
+        expert_page.add_not_eec_expert("Test Not EEC", util.random_nip_18(), "Test Company")
 
         message = expert_page.get_message()
         self.assertEqual(message, "Data Created!")
 
     def test_add_eec_expert(self):
         expert_page = ExpertPage(self.driver)
-        expert_page.add_eec_expert("Test EEC Name", util.random_nip_11())
+        expert_page.add_eec_expert(constant.EXPERT_NAME, util.random_nip_11())
 
         message = expert_page.get_message()
         self.assertEqual(message, "Data Created!")
 
     def test_edit_expert(self):
         expert_page = ExpertPage(self.driver)
-        expert_page.edit_expert("Test Name Edit", util.random_nip_16())
+        expert_page.edit_expert("Test Name Edit", util.random_nip_18())
 
         message = expert_page.get_message()
         self.assertEqual(message, "Data Updated!")
@@ -139,6 +140,37 @@ class ExpertManagement(BaseTest):
         self.assertEqual(message, "Data Deleted!")
 
 
+class DistributionManagement(BaseTest):
+
+    def test_view_distribution(self):
+        distribution_page = DistributionPage(self.driver)
+        distribution_page.view_distribution()
+
+        tr = self.driver.find_elements(By.CSS_SELECTOR, "tr")
+        self.assertGreater(len(tr), 1)
+
+    def test_add_distribution(self):
+        distribution_page = DistributionPage(self.driver)
+        distribution_page.add_distribution(constant.EXPERT_NAME)
+
+        message = distribution_page.get_message()
+        self.assertEqual(message, "Data Created!")
+
+    def test_edit_distribution(self):
+        distribution_page = DistributionPage(self.driver)
+        distribution_page.edit_distribution(constant.EXPERT_NAME)
+
+        message = distribution_page.get_message()
+        self.assertEqual(message, "Data Updated!")
+
+    def test_delete_distribution(self):
+        distribution_page = DistributionPage(self.driver)
+        distribution_page.delete_distribution()
+
+        message = distribution_page.get_message()
+        self.assertEqual(message, "Data Deleted!")
+
+
 class SiteRadarManagement(BaseTest):
 
     def test_site_view(self):
@@ -146,7 +178,6 @@ class SiteRadarManagement(BaseTest):
         self.driver.find_element(
             By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/site']").click()
 
-        time.sleep(1)
         card_list = self.driver.find_elements(
             By.CSS_SELECTOR, ".row .col-lg-4.col-md-6.col-sm-6")
         self.assertGreater(len(card_list), 0)
@@ -488,92 +519,6 @@ class StockManagement(BaseTest):
         self.assertGreater(len(tr), 1)
 
 
-class DistributionManagement(BaseTest):
-
-    def test_distribution_view(self):
-        self.driver.get(constant.BASE_URL + "/home")
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/distribution']").click()
-        time.sleep(1)
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.btn.btn-info").click()
-        time.sleep(1)
-
-        tr = self.driver.find_elements(By.CSS_SELECTOR, "tr")
-        self.assertGreater(len(tr), 1)
-
-    def test_distribution_add(self):
-        self.driver.get(constant.BASE_URL + "/home")
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/distribution']").click()
-        time.sleep(1)
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.btn.btn-info").click()
-        time.sleep(1)
-        self.driver.find_element(By.CSS_SELECTOR, "a.btn.btn-primary").click()
-
-        time.sleep(1)
-        distribution_sel_element = self.driver.find_element(By.ID, "site_id")
-        distribution_sel = Select(distribution_sel_element)
-        distribution_sel.select_by_index(1)
-
-        distribution_expert_element = self.driver.find_element(
-            By.ID, "expert_id")
-        distribution_expert = Select(distribution_expert_element)
-        distribution_expert.select_by_visible_text("Test Name")
-
-        self.driver.find_element(
-            By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']").click()
-        self.driver.switch_to.alert.accept()
-
-        time.sleep(5)
-        message = self.driver.find_element(
-            By.CSS_SELECTOR, "span[data-notify='message']").text
-        self.assertEqual(message, "Data Created!")
-
-    def test_distribution_edit(self):
-        self.driver.get(constant.BASE_URL + "/home")
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/distribution']").click()
-        time.sleep(1)
-        self.driver.find_elements(
-            By.CSS_SELECTOR, "a.btn.btn-info")[1].click()
-        time.sleep(1)
-        self.driver.find_element(By.CSS_SELECTOR, "a.btn.btn-warning").click()
-
-        time.sleep(1)
-        distribution_expert_element = self.driver.find_element(
-            By.ID, "expert_id")
-        distribution_expert = Select(distribution_expert_element)
-        distribution_expert.select_by_visible_text("Test Name")
-
-        self.driver.find_element(
-            By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']").click()
-        self.driver.switch_to.alert.accept()
-
-        time.sleep(5)
-        message = self.driver.find_element(
-            By.CSS_SELECTOR, "span[data-notify='message']").text
-        self.assertEqual(message, "Data Updated!")
-
-    def test_distribution_delete(self):
-        self.driver.get(constant.BASE_URL + "/home")
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/distribution']").click()
-        time.sleep(1)
-        self.driver.find_elements(
-            By.CSS_SELECTOR, "a.btn.btn-info")[1].click()
-        time.sleep(1)
-        self.driver.find_element(
-            By.CSS_SELECTOR, "button.btn.btn-danger").click()
-        self.driver.switch_to.alert.accept()
-
-        time.sleep(5)
-        message = self.driver.find_element(
-            By.CSS_SELECTOR, "span[data-notify='message']").text
-        self.assertEqual(message, "Data Deleted!")
-
-
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(AuthenticationLogin("test_login"))
@@ -588,17 +533,17 @@ def suite():
     # suite.addTest(MaintenanceManagement("test_view_detail_pm"))
     # suite.addTest(MaintenanceManagement("test_view_detail_cm"))
 
-    suite.addTest(ExpertManagement("test_view_expert"))
-    suite.addTest(ExpertManagement("test_add_not_eec_expert"))
-    suite.addTest(ExpertManagement("test_add_eec_expert"))
-    suite.addTest(ExpertManagement("test_edit_expert"))
-    suite.addTest(ExpertManagement("test_delete_expert"))
+    # suite.addTest(ExpertManagement("test_view_expert"))
+    # suite.addTest(ExpertManagement("test_add_not_eec_expert"))
+    # suite.addTest(ExpertManagement("test_add_eec_expert"))
+    # suite.addTest(ExpertManagement("test_edit_expert"))
+    # suite.addTest(ExpertManagement("test_delete_expert"))
 
-    # suite.addTest(DistributionManagement("test_distribution_view"))
-    # suite.addTest(DistributionManagement("test_distribution_add"))
-    # suite.addTest(DistributionManagement("test_distribution_edit"))
-    # suite.addTest(DistributionManagement(
-    #     "test_distribution_delete"))
+    # suite.addTest(DistributionManagement("test_view_distribution"))
+    # suite.addTest(DistributionManagement("test_add_distribution"))
+    # suite.addTest(DistributionManagement("test_edit_distribution"))
+    suite.addTest(DistributionManagement(
+        "test_delete_distribution"))
 
     # suite.addTest(SiteRadarManagement("test_site_view"))
     # suite.addTest(SiteRadarManagement("test_site_add"))

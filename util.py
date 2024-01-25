@@ -4,7 +4,7 @@ import string
 def random_nip_11():
     return randint(10000000000, 99999999999)
 
-def random_nip_16():
+def random_nip_18():
     return randint(100000000000000000, 999999999999999999)
 
 def random_part_number():
