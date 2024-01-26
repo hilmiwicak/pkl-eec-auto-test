@@ -49,7 +49,7 @@ class SiteRadarStockPage(BasePage):
 
         super().click_submit_button_primary()
 
-    def edit_site_stock(self):
+    def edit_site_stock(self, name, part_number, serial_number, tgl_masuk, expired_date):
         self.driver.get(self.constant.BASE_URL + "/home")
         self.driver.find_element(
             self.By.CSS_SELECTOR, "a.nav-link[href='" +
@@ -71,7 +71,7 @@ class SiteRadarStockPage(BasePage):
         name_input_element = self.driver.find_element(
             self.By.ID, "nama_barang")
         name_input_element.clear()
-        name_input_element.send_keys("Test Sited Stock Name Edit")
+        name_input_element.send_keys(name)
 
         # random item group selection
         self.driver.find_element(
@@ -83,17 +83,16 @@ class SiteRadarStockPage(BasePage):
         part_number_element = self.driver.find_element(
             self.By.ID, "part_number")
         part_number_element.clear()
-        part_number_element.send_keys(self.util.random_part_number())
+        part_number_element.send_keys(part_number)
 
         # random serial number input
-        self.driver.find_element(self.By.ID, "serial_number").send_keys(
-            self.util.random_serial_number())
+        self.driver.find_element(self.By.ID, "serial_number").send_keys(serial_number)
 
         # random date input
-        self.driver.find_element(self.By.ID, "tgl_masuk").send_keys("10162023")
+        self.driver.find_element(self.By.ID, "tgl_masuk").send_keys(tgl_masuk)
 
         # random date input
-        self.driver.find_element(self.By.ID, "expired").send_keys("11162023")
+        self.driver.find_element(self.By.ID, "expired").send_keys(expired_date)
 
         super().click_submit_button_primary()
 

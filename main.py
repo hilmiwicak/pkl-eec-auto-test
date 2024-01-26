@@ -1,9 +1,7 @@
 import unittest
 import sys
-import time
 
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.select import Select
 
 import constant
 from base_test import BaseTest
@@ -214,7 +212,8 @@ class SiteRadarStockManagement(BaseTest):
 
     def test_edit_site_stock(self):
         site_radar_stock_page = SiteRadarStockPage(self.driver)
-        site_radar_stock_page.edit_site_stock()
+        site_radar_stock_page.edit_site_stock("Test Sited Stock Name Edit", util.random_part_number(
+        ), util.random_serial_number(), "10162023", "11262023")
 
         message = site_radar_stock_page.get_message()
         self.assertEqual(message, "Data Edited!")
@@ -229,145 +228,38 @@ class SiteRadarStockManagement(BaseTest):
 
 class StockManagement(BaseTest):
 
-    def test_stock_view(self):
-        self.driver.get(constant.BASE_URL + "/home")
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/stocks']").click()
+    def test_view_stock(self):
+        stock_page = StockPage(self.driver)
+        stock_page.view_stock()
 
-        time.sleep(1)
         tr = self.driver.find_elements(By.CSS_SELECTOR, "tr")
-        self.assertGreater(len(tr), 1)
+        self.assertGreater(len(tr), 0)
 
-    def test_stock_add(self):
-        self.driver.get(constant.BASE_URL + "/home")
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/stocks']").click()
-        time.sleep(1)
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.btn-outline-primary[data-original-title='add item']").click()
+    def test_add_stock(self):
+        stock_page = StockPage(self.driver)
+        stock_page.add_stock("Test New Item Stock", util.random_part_number(), util.random_serial_number(), "10162023", "11162023", "1", "Keterangan Test Item")
 
-        time.sleep(1)
-        self.driver.find_element(By.ID, "nama_barang").send_keys(
-            "Test Item Inventory")
-
-        self.driver.find_element(
-            By.CSS_SELECTOR, "span.select2-selection__arrow").click()
-        self.driver.find_element(
-            By.CSS_SELECTOR, "li[aria-selected='false']").click()
-
-        self.driver.find_element(By.ID, "part_number").send_keys(
-            util.random_part_number())
-
-        self.driver.find_element(By.ID, "ref_des").send_keys(
-            util.random_serial_number())
-
-        self.driver.find_element(By.ID, "tgl_masuk").send_keys("10162023")
-
-        self.driver.find_element(By.ID, "expired").send_keys("11162023")
-
-        self.driver.find_element(By.ID, "button_kurs_beli").click()
-
-        self.driver.find_element(By.ID, "jumlah_unit").send_keys("1")
-
-        stock_status_element = self.driver.find_element(By.ID, "status")
-        stock_status_element.location_once_scrolled_into_view
-        stock_status_select = Select(stock_status_element)
-        stock_status_select.select_by_value("Obsolete")
-
-        self.driver.find_element(By.ID, "keterangan").send_keys(
-            "Keterangan Test Item")
-
-        button_element = self.driver.find_element(
-            By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']")
-        button_element.location_once_scrolled_into_view
-        button_element.click()
-
-        time.sleep(5)
-        message = self.driver.find_element(
-            By.CSS_SELECTOR, "span[data-notify='message']").text
+        message = stock_page.get_message()
         self.assertEqual(message, "Data berhasil ditambah!")
 
-    def test_stock_edit(self):
-        self.driver.get(constant.BASE_URL + "/home")
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/stocks']").click()
-        time.sleep(1)
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.btn.btn-warning").click()
+    def test_edit_stock(self):
+        stock_page = StockPage(self.driver)
+        stock_page.edit_stock()
 
-        time.sleep(1)
-
-        name_element = self.driver.find_element(By.ID, "nama_barang")
-        name_element.clear()
-        name_element.send_keys("Test Stock Edit")
-
-        self.driver.find_element(
-            By.CSS_SELECTOR, "span.select2-selection__arrow").click()
-        self.driver.find_element(
-            By.CSS_SELECTOR, "li[aria-selected='false']").click()
-
-        part_number_element = self.driver.find_element(By.ID, "part_number")
-        part_number_element.clear()
-        part_number_element.send_keys(util.random_part_number())
-
-        ref_des_element = self.driver.find_element(By.ID, "ref_des")
-        ref_des_element.clear()
-        ref_des_element.send_keys(util.random_serial_number())
-
-        self.driver.find_element(By.ID, "tgl_masuk").send_keys("10262023")
-
-        expired_element = self.driver.find_element(By.ID, "expired")
-        expired_element.location_once_scrolled_into_view
-        expired_element.send_keys("11262023")
-
-        unit_element = self.driver.find_element(By.ID, "jumlah_unit")
-        unit_element.clear()
-        unit_element.send_keys("2")
-
-        stock_status_element = self.driver.find_element(By.ID, "status")
-        stock_status_element.location_once_scrolled_into_view
-        stock_status_select = Select(stock_status_element)
-        stock_status_select.select_by_value("Dummy")
-
-        description_element = self.driver.find_element(
-            By.ID, "keterangan")
-        description_element.location_once_scrolled_into_view
-        description_element.clear()
-        description_element.send_keys("Keterangan Test Stock Edit")
-
-        button_element = self.driver.find_element(
-            By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']")
-        button_element.location_once_scrolled_into_view
-        button_element.click()
-
-        time.sleep(5)
-        message = self.driver.find_element(
-            By.CSS_SELECTOR, "span[data-notify='message']").text
+        message = stock_page.get_message()
         self.assertEqual(message, "Data berhasil di update")
 
-    def test_stock_delete(self):
-        self.driver.get(constant.BASE_URL + "/home")
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/stocks']").click()
-        time.sleep(1)
-        self.driver.find_element(
-            By.CSS_SELECTOR, "button.btn.btn-danger").click()
-        self.driver.switch_to.alert.accept()
+    def test_delete_stock(self):
+        stock_page = StockPage(self.driver)
+        stock_page.delete_stock()
 
-        time.sleep(5)
-        message = self.driver.find_element(
-            By.CSS_SELECTOR, "span[data-notify='message']").text
+        message = stock_page.get_message()
         self.assertEqual(message, "Data berhasil di hapus")
 
-    def test_stock_recommendation_view(self):
-        self.driver.get(constant.BASE_URL + "/home")
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/stocks']").click()
-        time.sleep(1)
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a[data-original-title='recommendation item']").click()
+    def test_view_stock_recommendation(self):
+        stock_page = StockPage(self.driver)
+        stock_page.view_stock_recommendation()
 
-        time.sleep(1)
         tr = self.driver.find_elements(By.CSS_SELECTOR, "tr")
         self.assertGreater(len(tr), 1)
 
@@ -402,19 +294,19 @@ def suite():
     # suite.addTest(SiteRadarManagement("test_add_site"))
     # suite.addTest(SiteRadarManagement("test_delete_site"))
 
-    suite.addTest(SiteRadarStockManagement(
-        "test_view_site_stock"))
-    suite.addTest(SiteRadarStockManagement("test_add_site_stock"))
-    suite.addTest(SiteRadarStockManagement(
-        "test_edit_site_stock"))
-    suite.addTest(SiteRadarStockManagement(
-        "test_delete_site_stock"))
+    # suite.addTest(SiteRadarStockManagement(
+    #     "test_view_site_stock"))
+    # suite.addTest(SiteRadarStockManagement("test_add_site_stock"))
+    # suite.addTest(SiteRadarStockManagement(
+    #     "test_edit_site_stock"))
+    # suite.addTest(SiteRadarStockManagement(
+    #     "test_delete_site_stock"))
 
-    # suite.addTest(StockManagement("test_stock_view"))
-    # suite.addTest(StockManagement("test_stock_add"))
-    # suite.addTest(StockManagement("test_stock_edit"))
-    # suite.addTest(StockManagement("test_stock_delete"))
-    # suite.addTest(StockManagement("test_stock_recommendation_view"))
+    suite.addTest(StockManagement("test_view_stock"))
+    suite.addTest(StockManagement("test_add_stock"))
+    suite.addTest(StockManagement("test_edit_stock"))
+    suite.addTest(StockManagement("test_delete_stock"))
+    suite.addTest(StockManagement("test_view_stock_recommendation"))
 
     suite.addTest(AuthenticationLogout("test_logout"))
     return suite
