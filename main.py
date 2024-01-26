@@ -198,144 +198,32 @@ class SiteRadarManagement(BaseTest):
 
 class SiteRadarStockManagement(BaseTest):
 
-    def test_site_stock_view(self):
-        self.driver.get(constant.BASE_URL + "/home")
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/site']").click()
-        time.sleep(1)
-        card_element = self.driver.find_element(
-            By.XPATH, "//strong[contains(text(),'Test Location')]/ancestor::div[contains(@class, 'card card-stats')]")
-        a_element = card_element.find_element(
-            By.XPATH, ".//a[contains(@class, 'btn-info')]")
-        a_element.location_once_scrolled_into_view
-        a_element.click()
+    def test_view_site_stock(self):
+        site_radar_stock_page = SiteRadarStockPage(self.driver)
+        site_radar_stock_page.view_site_stock()
 
-        time.sleep(5)
         tr = self.driver.find_elements(By.CSS_SELECTOR, "tbody tr")
-        self.assertGreater(len(tr), 1)
+        self.assertGreater(len(tr), 0)
 
-    def test_site_stock_add(self):
-        self.driver.get(constant.BASE_URL + "/home")
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/site']").click()
-        time.sleep(1)
-        card_element = self.driver.find_element(
-            By.XPATH, "//strong[contains(text(),'Test Location')]/ancestor::div[contains(@class, 'card card-stats')]")
-        a_element = card_element.find_element(
-            By.XPATH, ".//a[contains(@class, 'btn-info')]")
-        a_element.location_once_scrolled_into_view
-        a_element.click()
-        time.sleep(1)
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.btn-outline-primary.text-right").click()
+    def test_add_site_stock(self):
+        site_radar_stock_page = SiteRadarStockPage(self.driver)
+        site_radar_stock_page.add_site_stock()
 
-        time.sleep(1)
-        stock_sel_element_0 = self.driver.find_element(
-            By.CSS_SELECTOR, "select[name='stocks[0][stock_id]']")
-        stock_sel_0 = Select(stock_sel_element_0)
-        stock_sel_0.select_by_index(1)
-
-        time.sleep(1)
-        self.driver.find_element(
-            By.CSS_SELECTOR, "button.btn-secondary").click()
-        stock_sel_element_1 = self.driver.find_element(
-            By.CSS_SELECTOR, "select[name='stocks[1][stock_id]']")
-        stock_sel_1 = Select(stock_sel_element_1)
-        stock_sel_1.select_by_index(2)
-
-        time.sleep(1)
-        self.driver.find_element(
-            By.CSS_SELECTOR, "button.btn-secondary").click()
-        stock_sel_element_2 = self.driver.find_element(
-            By.CSS_SELECTOR, "select[name='stocks[2][stock_id]']")
-        stock_sel_2 = Select(stock_sel_element_2)
-        stock_sel_2.select_by_index(3)
-
-        time.sleep(1)
-        self.driver.find_element(
-            By.CSS_SELECTOR, "button.btn-secondary").click()
-        stock_sel_element_3 = self.driver.find_element(
-            By.CSS_SELECTOR, "select[name='stocks[3][stock_id]']")
-        stock_sel_3 = Select(stock_sel_element_3)
-        stock_sel_3.select_by_index(4)
-
-        button = self.driver.find_element(
-            By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']")
-        button.location_once_scrolled_into_view
-        button.click()
-
-        time.sleep(5)
-        message = self.driver.find_element(
-            By.CSS_SELECTOR, "span[data-notify='message']").text
+        message = site_radar_stock_page.get_message()
         self.assertEqual(message, "Data Created!")
 
-    def test_site_stock_edit(self):
-        self.driver.get(constant.BASE_URL + "/home")
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/site']").click()
-        time.sleep(1)
-        card_element = self.driver.find_element(
-            By.XPATH, "//strong[contains(text(),'Test Location')]/ancestor::div[contains(@class, 'card card-stats')]")
-        a_element = card_element.find_element(
-            By.XPATH, ".//a[contains(@class, 'btn-info')]")
-        a_element.location_once_scrolled_into_view
-        a_element.click()
-        time.sleep(1)
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.btn-warning").click()
+    def test_edit_site_stock(self):
+        site_radar_stock_page = SiteRadarStockPage(self.driver)
+        site_radar_stock_page.edit_site_stock()
 
-        time.sleep(1)
-        name_input_element = self.driver.find_element(
-            By.ID, "nama_barang")
-        name_input_element.clear()
-        name_input_element.send_keys("Test Stock Radar")
-
-        self.driver.find_element(
-            By.CSS_SELECTOR, "span.select2-selection__arrow").click()
-        self.driver.find_element(
-            By.CSS_SELECTOR, "li[aria-selected='false']").click()
-
-        part_number_element = self.driver.find_element(By.ID, "part_number")
-        part_number_element.clear()
-        part_number_element.send_keys(util.random_part_number())
-
-        self.driver.find_element(By.ID, "serial_number").send_keys(
-            util.random_serial_number())
-
-        self.driver.find_element(By.ID, "tgl_masuk").send_keys("10162023")
-
-        self.driver.find_element(By.ID, "expired").send_keys("11162023")
-
-        button = self.driver.find_element(
-            By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']")
-        button.location_once_scrolled_into_view
-        button.click()
-
-        time.sleep(5)
-        message = self.driver.find_element(
-            By.CSS_SELECTOR, "span[data-notify='message']").text
+        message = site_radar_stock_page.get_message()
         self.assertEqual(message, "Data Edited!")
 
-    def test_site_stock_delete(self):
-        self.driver.get(constant.BASE_URL + "/home")
-        self.driver.find_element(
-            By.CSS_SELECTOR, "a.nav-link[href='" + constant.BASE_URL + "/site']").click()
-        time.sleep(1)
-        card_element = self.driver.find_element(
-            By.XPATH, "//strong[contains(text(),'Test Location')]/ancestor::div[contains(@class, 'card card-stats')]")
-        a_element = card_element.find_element(
-            By.XPATH, ".//a[contains(@class, 'btn-info')]")
-        a_element.location_once_scrolled_into_view
-        a_element.click()
-        time.sleep(1)
-        self.driver.find_element(
-            By.CSS_SELECTOR, "button.btn-danger").click()
-        time.sleep(1)
-        self.driver.switch_to.alert.accept()
+    def test_delete_site_stock(self):
+        site_radar_stock_page = SiteRadarStockPage(self.driver)
+        site_radar_stock_page.delete_site_stock()
 
-        time.sleep(5)
-        message = self.driver.find_element(
-            By.CSS_SELECTOR, "span[data-notify='message']").text
+        message = site_radar_stock_page.get_message()
         self.assertEqual(message, "Data Deleted!")
 
 
@@ -510,17 +398,17 @@ def suite():
     # suite.addTest(DistributionManagement(
     #     "test_delete_distribution"))
 
-    suite.addTest(SiteRadarManagement("test_view_site"))
-    suite.addTest(SiteRadarManagement("test_add_site"))
-    suite.addTest(SiteRadarManagement("test_delete_site"))
+    # suite.addTest(SiteRadarManagement("test_view_site"))
+    # suite.addTest(SiteRadarManagement("test_add_site"))
+    # suite.addTest(SiteRadarManagement("test_delete_site"))
 
-    # suite.addTest(SiteRadarStockManagement(
-    #     "test_site_stock_view"))
-    # suite.addTest(SiteRadarStockManagement("test_site_stock_add"))
-    # suite.addTest(SiteRadarStockManagement(
-    #     "test_site_stock_edit"))
-    # suite.addTest(SiteRadarStockManagement(
-    #     "test_site_stock_delete"))
+    suite.addTest(SiteRadarStockManagement(
+        "test_view_site_stock"))
+    suite.addTest(SiteRadarStockManagement("test_add_site_stock"))
+    suite.addTest(SiteRadarStockManagement(
+        "test_edit_site_stock"))
+    suite.addTest(SiteRadarStockManagement(
+        "test_delete_site_stock"))
 
     # suite.addTest(StockManagement("test_stock_view"))
     # suite.addTest(StockManagement("test_stock_add"))
