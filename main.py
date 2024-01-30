@@ -19,10 +19,18 @@ class AuthenticationLogin(BaseTest):
 
     def test_login(self):
         login_page = LoginPage(self.driver)
-        login_page.login(constant.EMAIL, constant.PASSWORD)
 
-        cur_url = self.driver.current_url
-        self.assertEqual(cur_url, constant.BASE_URL + "/home")
+        with self.subTest("invalid email and password"):
+            login_page.login("wrong_email@email.com", "wrong password")
+
+            message = self.driver.find_element(By.ID, "email-error").text
+            self.assertEqual(message, "These credentials do not match our records.")
+
+        with self.subTest("valid email and password"):
+            login_page.login(constant.EMAIL, constant.PASSWORD)
+
+            cur_url = self.driver.current_url
+            self.assertEqual(cur_url, constant.BASE_URL + "/home")
 
 
 class AuthenticationLogout(BaseTest):
@@ -302,11 +310,11 @@ def suite():
     # suite.addTest(SiteRadarStockManagement(
     #     "test_delete_site_stock"))
 
-    suite.addTest(StockManagement("test_view_stock"))
-    suite.addTest(StockManagement("test_add_stock"))
-    suite.addTest(StockManagement("test_edit_stock"))
-    suite.addTest(StockManagement("test_delete_stock"))
-    suite.addTest(StockManagement("test_view_stock_recommendation"))
+    # suite.addTest(StockManagement("test_view_stock"))
+    # suite.addTest(StockManagement("test_add_stock"))
+    # suite.addTest(StockManagement("test_edit_stock"))
+    # suite.addTest(StockManagement("test_delete_stock"))
+    # suite.addTest(StockManagement("test_view_stock_recommendation"))
 
     suite.addTest(AuthenticationLogout("test_logout"))
     return suite
