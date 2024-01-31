@@ -3,7 +3,7 @@ from pages.base_page import BasePage
 
 class ProfilePage(BasePage):
 
-    def edit_password(self, current_password, new_password):
+    def edit_password(self, current_password, new_password, confirmation_password):
         super().open_home()
         self.driver.find_element(
             self.By.CSS_SELECTOR, "a.nav-link#navbarDropdownProfile").click()
@@ -19,8 +19,14 @@ class ProfilePage(BasePage):
         self.driver.find_element(
             self.By.ID, "input-password").send_keys(new_password)
         self.driver.find_element(
-            self.By.ID, "input-password-confirmation").send_keys(new_password)
+            self.By.ID, "input-password-confirmation").send_keys(confirmation_password)
 
         self.click_submit_button_primary()
 
         self.time.sleep(1)
+
+    def get_message_current_password_error(self):
+        return self.driver.find_element(self.By.ID, "name-error").text
+
+    def get_message_new_password_error(self):
+        return self.driver.find_element(self.By.ID, "password-error").text

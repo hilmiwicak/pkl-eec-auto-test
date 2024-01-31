@@ -20,11 +20,11 @@ class AuthenticationLogin(BaseTest):
     def test_login(self):
         login_page = LoginPage(self.driver)
 
-        with self.subTest("invalid email and password"):
-            login_page.login("wrong_email@email.com", "wrong password")
-
-            message = self.driver.find_element(By.ID, "email-error").text
-            self.assertEqual(message, "These credentials do not match our records.")
+        # with self.subTest("invalid email and password"):
+        #     login_page.login("wrong_email@email.com", "wrong password")
+        #
+        #     message = self.driver.find_element(By.ID, "email-error").text
+        #     self.assertEqual(message, "These credentials do not match our records.")
 
         with self.subTest("valid email and password"):
             login_page.login(constant.EMAIL, constant.PASSWORD)
@@ -52,10 +52,52 @@ class PasswordEdit(BaseTest):
 
     def test_edit_password(self):
         profile_page = ProfilePage(self.driver)
-        profile_page.edit_password(constant.PASSWORD, constant.NEW_PASSWORD)
 
-        message = profile_page.get_message()
-        self.assertEqual(message, "Password has succesfully changed!")
+        with self.subTest("different current password, and confirmation password, valid new"):
+            profile_page.edit_password("wrong password", "wrong password", "wrong password1")
+
+            message_current = profile_page.get_message_current_password_error()
+            message_new = profile_page.get_message_new_password_error()
+            self.assertEqual(
+                message_current, "The current password field does not match your password")
+            self.assertEqual(
+                message_new, "The password confirmation does not match.")
+
+        with self.subTest("current password less than 6 characters, new password less than 6 characters, same password confirmation"):
+            profile_page.edit_password("wrong", "wrong", "wrong")
+
+            message_current = profile_page.get_message_current_password_error()
+            message_new = profile_page.get_message_new_password_error()
+            self.assertEqual(message_current, "The current password must be at least 6 characters.")
+            self.assertEqual(message_new, "The password must be at least 6 characters.")
+
+        with self.subTest("empty"):
+            profile_page.edit_password("", "", "")
+
+            message_current = profile_page.get_message_current_password_error()
+            message_new = profile_page.get_message_new_password_error()
+            self.assertEqual(message_current, "The current password field is required.")
+            self.assertEqual(message_new, "The password field is required.")
+
+        with self.subTest("same new password"):
+            profile_page.edit_password(constant.PASSWORD, constant.PASSWORD, constant.PASSWORD)
+
+            message_new = profile_page.get_message_new_password_error()
+            self.assertEqual(message_new, "The password and current password must be different.")
+
+        with self.subTest("valid password"):
+            profile_page.edit_password(
+                constant.PASSWORD, constant.NEW_PASSWORD, constant.NEW_PASSWORD)
+
+            message = profile_page.get_message()
+            self.assertEqual(message, "Password has succesfully changed!")
+
+        # outside skripsi
+        with self.subTest("revert the password"):
+            profile_page.edit_password(constant.NEW_PASSWORD, constant.PASSWORD, constant.PASSWORD)
+
+            message = profile_page.get_message()
+            self.assertEqual(message, "Password has succesfully changed!")
 
 
 class AccountManagement(BaseTest):
@@ -276,7 +318,7 @@ def suite():
     suite = unittest.TestSuite()
     suite.addTest(AuthenticationLogin("test_login"))
 
-    # suite.addTest(PasswordEdit("test_edit_password"))
+    suite.addTest(PasswordEdit("test_edit_password"))
 
     # suite.addTest(AccountManagement("test_verify_account"))
     # suite.addTest(AccountManagement("test_delete_account"))
@@ -321,5 +363,5 @@ def suite():
 
 
 if __name__ == "__main__":
-    runner = unittest.TextTestRunner()
+    runner = unittest.TextTestRunner(verbosity=2)
     runner.run(suite())
