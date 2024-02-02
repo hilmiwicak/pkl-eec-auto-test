@@ -4,6 +4,7 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.common.by import By as SeleniumBy
 from selenium.webdriver import Keys as SeleniumKeys
 from selenium.webdriver.support.select import Select as SeleniumSelect
+from selenium.common.exceptions import NoSuchElementException
 
 import constant
 import util
@@ -18,6 +19,7 @@ class BasePage:
         self.By = SeleniumBy
         self.Keys = SeleniumKeys
         self.Select = SeleniumSelect
+        self.NoSuchElementException = NoSuchElementException
 
     def open_home(self):
         self.driver.get(self.constant.BASE_URL + "/home")

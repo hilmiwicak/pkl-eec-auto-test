@@ -10,45 +10,32 @@ class ExpertPage(BasePage):
             self.constant.BASE_URL + "/expertManagement']"
         ).click()
 
-    def add_not_eec_expert(self, name, nip, expert_company):
+    def add_expert(self, name, nip, expert_company=None):
         super().open_home()
         self.driver.find_element(
             self.By.CSS_SELECTOR, "a.nav-link[href='" +
             self.constant.BASE_URL + "/expertManagement']"
         ).click()
-        # add_element = self.driver.find_element(
-        #     self.By.CSS_SELECTOR, "a.nav-link[href='" + self.constant.BASE_URL + "/expertManagement']")
-        # self.driver.execute_script("arguments[0].click();", add_element)
+        self.time.sleep(1)
         self.driver.find_element(
             self.By.CSS_SELECTOR, "a.btn-primary").click()
+        self.time.sleep(1)
         self.driver.find_element(
             self.By.ID, "name").send_keys(name)
         self.driver.find_element(
             self.By.ID, "nip").send_keys(nip)
-        self.driver.find_element(
-            self.By.ID, "expert_company").send_keys(expert_company)
-        super().click_submit_button_primary()
-        self.driver.switch_to.alert.accept()
 
-    def add_eec_expert(self, name, nip):
-        super().open_home()
-        self.driver.find_element(
-            self.By.CSS_SELECTOR, "a.nav-link[href='" +
-            self.constant.BASE_URL + "/expertManagement']"
-        ).click()
-        self.time.sleep(1)
-        self.driver.find_element(
-            self.By.CSS_SELECTOR, "a.btn-primary").click()
-        self.time.sleep(1)
-        self.driver.find_element(
-            self.By.ID, "name").send_keys(name)
-        self.driver.find_element(
-            self.By.ID, "nip").send_keys(nip)
-        self.driver.find_element(self.By.ID, "eec_expert").click()
+        if expert_company is None:
+            self.driver.find_element(self.By.ID, "eec_expert").click()
+        else:
+            self.driver.find_element(
+                self.By.ID, "expert_company").send_keys(expert_company)
+
         super().click_submit_button_primary()
         self.driver.switch_to.alert.accept()
 
     def edit_expert(self, name, nip):
+        # TODO: better one : let's say select the correct expert with the name
         super().open_home()
         self.driver.find_element(
             self.By.CSS_SELECTOR, "a.nav-link[href='" +
@@ -78,3 +65,33 @@ class ExpertPage(BasePage):
         self.driver.find_element(
             self.By.CSS_SELECTOR, "button.btn.btn-danger").click()
         self.driver.switch_to.alert.accept()
+
+    def get_message_name_error(self):
+        try:
+            message_el = self.driver.find_element(
+                self.By.XPATH,
+                "//label[contains(@for, 'name')]/..//div[@class='invalid-feedback']"
+            )
+            return message_el.text
+        except self.NoSuchElementException:
+            return ""
+
+    def get_message_nip_error(self):
+        try:
+            message_el = self.driver.find_element(
+                self.By.XPATH,
+                "//label[contains(@for, 'nip')]/..//div[@class='invalid-feedback']"
+            )
+            return message_el.text
+        except self.NoSuchElementException:
+            return ""
+
+    def get_message_company_error(self):
+        try:
+            message_el = self.driver.find_element(
+                self.By.XPATH,
+                "//label[contains(@for, 'expert_company')]/..//div[@class='invalid-feedback']"
+            )
+            return message_el.text
+        except self.NoSuchElementException:
+            return ""

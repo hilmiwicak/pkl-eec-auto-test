@@ -53,8 +53,9 @@ class PasswordEdit(BaseTest):
     def test_edit_password(self):
         profile_page = ProfilePage(self.driver)
 
-        with self.subTest("different current password, and confirmation password, valid new"):
-            profile_page.edit_password("wrong password", "wrong password", "wrong password1")
+        with self.subTest("1. different current password, and confirmation password, valid new"):
+            profile_page.edit_password(
+                "wrong password", "wrong password", "wrong password1")
 
             message_current = profile_page.get_message_current_password_error()
             message_new = profile_page.get_message_new_password_error()
@@ -63,29 +64,34 @@ class PasswordEdit(BaseTest):
             self.assertEqual(
                 message_new, "The password confirmation does not match.")
 
-        with self.subTest("current password less than 6 characters, new password less than 6 characters, same password confirmation"):
+        with self.subTest("2. current password less than 6 characters, new password less than 6 characters, same password confirmation"):
             profile_page.edit_password("wrong", "wrong", "wrong")
 
             message_current = profile_page.get_message_current_password_error()
             message_new = profile_page.get_message_new_password_error()
-            self.assertEqual(message_current, "The current password must be at least 6 characters.")
-            self.assertEqual(message_new, "The password must be at least 6 characters.")
+            self.assertEqual(
+                message_current, "The current password must be at least 6 characters.")
+            self.assertEqual(
+                message_new, "The password must be at least 6 characters.")
 
-        with self.subTest("empty"):
+        with self.subTest("3. empty"):
             profile_page.edit_password("", "", "")
 
             message_current = profile_page.get_message_current_password_error()
             message_new = profile_page.get_message_new_password_error()
-            self.assertEqual(message_current, "The current password field is required.")
+            self.assertEqual(
+                message_current, "The current password field is required.")
             self.assertEqual(message_new, "The password field is required.")
 
-        with self.subTest("same new password"):
-            profile_page.edit_password(constant.PASSWORD, constant.PASSWORD, constant.PASSWORD)
+        with self.subTest("4. same new password"):
+            profile_page.edit_password(
+                constant.PASSWORD, constant.PASSWORD, constant.PASSWORD)
 
             message_new = profile_page.get_message_new_password_error()
-            self.assertEqual(message_new, "The password and current password must be different.")
+            self.assertEqual(
+                message_new, "The password and current password must be different.")
 
-        with self.subTest("valid password"):
+        with self.subTest("5. valid password"):
             profile_page.edit_password(
                 constant.PASSWORD, constant.NEW_PASSWORD, constant.NEW_PASSWORD)
 
@@ -94,7 +100,8 @@ class PasswordEdit(BaseTest):
 
         # outside skripsi
         with self.subTest("revert the password"):
-            profile_page.edit_password(constant.NEW_PASSWORD, constant.PASSWORD, constant.PASSWORD)
+            profile_page.edit_password(
+                constant.NEW_PASSWORD, constant.PASSWORD, constant.PASSWORD)
 
             message = profile_page.get_message()
             self.assertEqual(message, "Password has succesfully changed!")
@@ -159,19 +166,91 @@ class ExpertManagement(BaseTest):
         tr = self.driver.find_elements(By.CSS_SELECTOR, "tr")
         self.assertGreater(len(tr), 1)
 
-    def test_add_not_eec_expert(self):
+    def test_add_expert(self):
         expert_page = ExpertPage(self.driver)
-        expert_page.add_not_eec_expert("Test Not EEC", util.random_nip_18(), "Test Company")
+        nip_eec_expert = util.random_nip_11()
 
-        message = expert_page.get_message()
-        self.assertEqual(message, "Data Created!")
+        with self.subTest("1. name more than 15, nip less than 11, valid company"):
+            expert_page.add_expert(
+                "this name is more than 15", util.random_nip_lt_11(), "Test Company")
 
-    def test_add_eec_expert(self):
-        expert_page = ExpertPage(self.driver)
-        expert_page.add_eec_expert(constant.EXPERT_NAME, util.random_nip_11())
+            message_name = expert_page.get_message_name_error()
+            message_nip = expert_page.get_message_nip_error()
+            message_company = expert_page.get_message_company_error()
+            self.assertEqual(
+                message_name, "The name may not be greater than 15 characters.")
+            self.assertEqual(
+                message_nip, "This input must be 11 or 18 digits.")
+            self.assertEqual(message_company, "")
 
-        message = expert_page.get_message()
-        self.assertEqual(message, "Data Created!")
+        with self.subTest("2. name not regular string, nip not integer, expert company not regular string"):
+            expert_page.add_expert("Björk 东-л", "test 10000.0", "компанија-測試")
+
+            message_name = expert_page.get_message_name_error()
+            message_nip = expert_page.get_message_nip_error()
+            message_company = expert_page.get_message_company_error()
+            self.assertEqual(message_name, "")
+            self.assertEqual(
+                message_nip, "This input must be 11 or 18 digits.")
+            self.assertEqual(message_company, "")
+
+        with self.subTest("3. correct name, nip more than 18 digit, eec expert"):
+            expert_page.add_expert(constant.EXPERT_NAME,
+                                   util.random_nip_gt_18())
+
+            message_name = expert_page.get_message_name_error()
+            message_nip = expert_page.get_message_nip_error()
+            message_company = expert_page.get_message_company_error()
+            self.assertEqual(message_name, "")
+            self.assertEqual(
+                message_nip, "This input must be 11 or 18 digits.")
+            self.assertEqual(message_company, "")
+
+        # ERROR
+        with self.subTest("4. correct name, correct eec company, nip 18 digit"):
+            expert_page.add_expert("Test Name", util.random_nip_18())
+
+            message_name = expert_page.get_message_name_error()
+            message_nip = expert_page.get_message_nip_error()
+            message_company = expert_page.get_message_company_error()
+            self.assertEqual(message_name, "")
+            self.assertEqual(message_nip, "something")
+            self.assertEqual(message_company, "")
+
+        with self.subTest("5. empty"):
+            expert_page.add_expert("", "", "")
+
+            message_name = expert_page.get_message_name_error()
+            message_nip = expert_page.get_message_nip_error()
+            message_company = expert_page.get_message_company_error()
+            self.assertEqual(message_name, "The name field is required.")
+            self.assertEqual(message_nip, "The nip field is required.")
+            self.assertEqual(
+                message_company, "The expert company field is required.")
+
+        with self.subTest("6. correct inputs, not eec expert"):
+            expert_page.add_expert(
+                "Test Not EEC", util.random_nip_18(), "Test Company")
+
+            message = expert_page.get_message()
+            self.assertEqual(message, "Data Created!")
+
+        with self.subTest("7. correct inputs, eec expert"):
+            expert_page.add_expert(constant.EXPERT_NAME, nip_eec_expert)
+
+            message = expert_page.get_message()
+            self.assertEqual(message, "Data Created!")
+
+        # ERROR
+        with self.subTest("8. same name, same nip, eec expert"):
+            expert_page.add_expert(constant.EXPERT_NAME, nip_eec_expert)
+
+            message_name = expert_page.get_message_name_error()
+            message_nip = expert_page.get_message_nip_error()
+            message_company = expert_page.get_message_company_error()
+            self.assertEqual(message_name, "")
+            self.assertEqual(message_nip, "The nip has already been taken.")
+            self.assertEqual(message_company, "")
 
     def test_edit_expert(self):
         expert_page = ExpertPage(self.driver)
@@ -287,7 +366,8 @@ class StockManagement(BaseTest):
 
     def test_add_stock(self):
         stock_page = StockPage(self.driver)
-        stock_page.add_stock("Test New Item Stock", util.random_part_number(), util.random_serial_number(), "10162023", "11162023", "1", "Keterangan Test Item")
+        stock_page.add_stock("Test New Item Stock", util.random_part_number(
+        ), util.random_serial_number(), "10162023", "11162023", "1", "Keterangan Test Item")
 
         message = stock_page.get_message()
         self.assertEqual(message, "Data berhasil ditambah!")
@@ -318,7 +398,7 @@ def suite():
     suite = unittest.TestSuite()
     suite.addTest(AuthenticationLogin("test_login"))
 
-    suite.addTest(PasswordEdit("test_edit_password"))
+    # suite.addTest(PasswordEdit("test_edit_password"))
 
     # suite.addTest(AccountManagement("test_verify_account"))
     # suite.addTest(AccountManagement("test_delete_account"))
@@ -329,8 +409,7 @@ def suite():
     # suite.addTest(MaintenanceManagement("test_view_detail_cm"))
 
     # suite.addTest(ExpertManagement("test_view_expert"))
-    # suite.addTest(ExpertManagement("test_add_not_eec_expert"))
-    # suite.addTest(ExpertManagement("test_add_eec_expert"))
+    suite.addTest(ExpertManagement("test_add_expert"))
     # suite.addTest(ExpertManagement("test_edit_expert"))
     # suite.addTest(ExpertManagement("test_delete_expert"))
 

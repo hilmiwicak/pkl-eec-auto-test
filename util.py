@@ -1,11 +1,17 @@
 from random import randint, choice
 import string
 
+def random_nip_lt_11():
+    return randint(0, 9999999999)
+
 def random_nip_11():
     return randint(10000000000, 99999999999)
 
 def random_nip_18():
     return randint(100000000000000000, 999999999999999999)
+
+def random_nip_gt_18():
+    return randint(1000000000000000000, 9999999999999999999)
 
 def random_part_number():
     part1 = ''.join([str(randint(0, 9)) for _ in range(5)])
