@@ -20,7 +20,7 @@ class BaseTest(unittest.TestCase):
             'excludeSwitches', ['enable-logging'])
 
         self.driver = webdriver.Chrome(options=chrome_opt, service=service_obj)
-        self.driver.implicitly_wait(5)
+        self.driver.implicitly_wait(3)
 
     def tearDown(self):
         self.driver.close()

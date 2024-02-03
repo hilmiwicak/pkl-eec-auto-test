@@ -18,11 +18,10 @@ class SiteRadarPage(BasePage):
         ).click()
         self.driver.find_element(
             self.By.CSS_SELECTOR, "a.btn-primary").click()
-        self.driver.find_element(
-            self.By.ID, "radar_name").send_keys("Test Radar Site")
-        self.driver.find_element(
-            self.By.ID, "station_id").send_keys(self.constant.SITE_LOCATION)
-        self.driver.find_element(self.By.ID, "image").send_keys(
+        self.driver.find_element("radar_name").send_keys("Test Radar Site")
+        self.driver.find_element("station_id").send_keys(
+            self.constant.SITE_LOCATION)
+        self.driver.find_element("image").send_keys(
             self.constant.SITE_IMAGE_PATH)
 
         # selects stock with index 1 (random)

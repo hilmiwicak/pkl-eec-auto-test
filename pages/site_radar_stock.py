@@ -68,8 +68,7 @@ class SiteRadarStockPage(BasePage):
         self.driver.find_element(
             self.By.CSS_SELECTOR, "a.btn-warning").click()
 
-        name_input_element = self.driver.find_element(
-            self.By.ID, "nama_barang")
+        name_input_element = self.driver.find_element("nama_barang")
         name_input_element.clear()
         name_input_element.send_keys(name)
 
@@ -80,19 +79,18 @@ class SiteRadarStockPage(BasePage):
             self.By.CSS_SELECTOR, "li[aria-selected='false']").click()
 
         # random part number input
-        part_number_element = self.driver.find_element(
-            self.By.ID, "part_number")
+        part_number_element = self.driver.find_element("part_number")
         part_number_element.clear()
         part_number_element.send_keys(part_number)
 
         # random serial number input
-        self.driver.find_element(self.By.ID, "serial_number").send_keys(serial_number)
+        self.driver.find_element("serial_number").send_keys(serial_number)
 
         # random date input
-        self.driver.find_element(self.By.ID, "tgl_masuk").send_keys(tgl_masuk)
+        self.driver.find_element("tgl_masuk").send_keys(tgl_masuk)
 
         # random date input
-        self.driver.find_element(self.By.ID, "expired").send_keys(expired_date)
+        self.driver.find_element("expired").send_keys(expired_date)
 
         super().click_submit_button_primary()
 

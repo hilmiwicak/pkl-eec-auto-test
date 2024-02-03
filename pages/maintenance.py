@@ -13,7 +13,6 @@ class MaintenancePage(BasePage):
             self.By.CSS_SELECTOR, "a.btn-info[href='" +
             self.constant.BASE_URL + "/pm']"
         ).click()
-        self.time.sleep(1)
 
     def view_detail_pm(self):
         super().open_home()

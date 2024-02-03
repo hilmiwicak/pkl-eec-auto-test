@@ -7,7 +7,7 @@ class ProfilePage(BasePage):
         super().open_home()
         self.driver.find_element(
             self.By.CSS_SELECTOR, "a.nav-link#navbarDropdownProfile").click()
-        self.time.sleep(1)
+        self.time.sleep(500/1000)
         self.driver.find_element(
             self.By.CSS_SELECTOR, "a.dropdown-item[href='" +
             self.constant.BASE_URL + "/profile']"
@@ -15,18 +15,15 @@ class ProfilePage(BasePage):
 
         self.time.sleep(500/1000)
         self.driver.find_element(
-            self.By.ID, "input-current-password").send_keys(current_password)
+            "input-current-password").send_keys(current_password)
+        self.driver.find_element("input-password").send_keys(new_password)
         self.driver.find_element(
-            self.By.ID, "input-password").send_keys(new_password)
-        self.driver.find_element(
-            self.By.ID, "input-password-confirmation").send_keys(confirmation_password)
+            "input-password-confirmation").send_keys(confirmation_password)
 
-        self.click_submit_button_primary()
-
-        self.time.sleep(1)
+        super().click_submit_button_primary()
 
     def get_message_current_password_error(self):
-        return self.driver.find_element(self.By.ID, "name-error").text
+        return self.driver.find_element("name-error").text
 
     def get_message_new_password_error(self):
-        return self.driver.find_element(self.By.ID, "password-error").text
+        return self.driver.find_element("password-error").text
