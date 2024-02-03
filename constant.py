@@ -6,10 +6,9 @@ BASE_URL = "http://localhost:8000"
 
 EMAIL = "admin@eecid.com"
 PASSWORD = "secret"
-NEW_PASSWORD = "secret1"
+NEW_PASSWORD = " ©ƕǿȜ-? "
 
 EXPERT_NAME = "Test EEC Name"
 
 SITE_IMAGE_PATH = r"C:\Users\Hilmi\dev-projects\skripsi-selenium\skripsi-src\resources\radar.jpeg"
 SITE_LOCATION = "Test Location"
-

@@ -23,7 +23,7 @@ class AuthenticationLogin(BaseTest):
         # with self.subTest("invalid email and password"):
         #     login_page.login("wrong_email@email.com", "wrong password")
         #
-        #     message = self.driver.find_element(By.ID, "email-error").text
+        #     message = self.driver.find_element("email-error").text
         #     self.assertEqual(message, "These credentials do not match our records.")
 
         with self.subTest("valid email and password"):
@@ -91,15 +91,15 @@ class PasswordEdit(BaseTest):
             self.assertEqual(
                 message_new, "The password and current password must be different.")
 
-        with self.subTest("5. valid password"):
+        with self.subTest("5. new password not regular string"):
             profile_page.edit_password(
                 constant.PASSWORD, constant.NEW_PASSWORD, constant.NEW_PASSWORD)
 
             message = profile_page.get_message()
             self.assertEqual(message, "Password has succesfully changed!")
 
-        # outside skripsi
-        with self.subTest("revert the password"):
+        # ERROR
+        with self.subTest("6. current password not regular string"):
             profile_page.edit_password(
                 constant.NEW_PASSWORD, constant.PASSWORD, constant.PASSWORD)
 
@@ -254,10 +254,13 @@ class ExpertManagement(BaseTest):
 
     def test_edit_expert(self):
         expert_page = ExpertPage(self.driver)
-        expert_page.edit_expert("Test Name Edit", util.random_nip_18())
 
-        message = expert_page.get_message()
-        self.assertEqual(message, "Data Updated!")
+        name_view, nip_view, company_view = expert_page.view_expert_detail()
+        name_edit, nip_edit, company_edit = expert_page.edit_expert_detail()
+
+        self.assertEqual(name_view, name_edit)
+        self.assertEqual(nip_view, nip_edit)
+        self.assertEqual(company_view, company_edit)
 
     def test_delete_expert(self):
         expert_page = ExpertPage(self.driver)
@@ -398,7 +401,7 @@ def suite():
     suite = unittest.TestSuite()
     suite.addTest(AuthenticationLogin("test_login"))
 
-    # suite.addTest(PasswordEdit("test_edit_password"))
+    suite.addTest(PasswordEdit("test_edit_password"))
 
     # suite.addTest(AccountManagement("test_verify_account"))
     # suite.addTest(AccountManagement("test_delete_account"))
@@ -409,7 +412,7 @@ def suite():
     # suite.addTest(MaintenanceManagement("test_view_detail_cm"))
 
     # suite.addTest(ExpertManagement("test_view_expert"))
-    suite.addTest(ExpertManagement("test_add_expert"))
+    # suite.addTest(ExpertManagement("test_add_expert"))
     # suite.addTest(ExpertManagement("test_edit_expert"))
     # suite.addTest(ExpertManagement("test_delete_expert"))
 
