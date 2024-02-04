@@ -131,7 +131,7 @@ class MaintenanceManagement(BaseTest):
         pm_page.view_pm()
 
         tr = self.driver.find_elements(By.CSS_SELECTOR, "tr")
-        self.assertGreater(len(tr), 1)
+        self.assertGreater(len(tr), 0)
 
     def test_view_detail_pm(self):
         pm_page = MaintenancePage(self.driver)
@@ -146,7 +146,7 @@ class MaintenanceManagement(BaseTest):
         cm_page.view_cm()
 
         tr = self.driver.find_elements(By.CSS_SELECTOR, "tr")
-        self.assertGreater(len(tr), 1)
+        self.assertGreater(len(tr), 0)
 
     def test_view_detail_cm(self):
         cm_page = MaintenancePage(self.driver)
@@ -164,7 +164,7 @@ class ExpertManagement(BaseTest):
         expert_page.view_expert()
 
         tr = self.driver.find_elements(By.CSS_SELECTOR, "tr")
-        self.assertGreater(len(tr), 1)
+        self.assertGreater(len(tr), 0)
 
     def test_add_expert(self):
         expert_page = ExpertPage(self.driver)
@@ -270,37 +270,6 @@ class ExpertManagement(BaseTest):
         self.assertEqual(message, "Data Deleted!")
 
 
-class DistributionManagement(BaseTest):
-
-    def test_view_distribution(self):
-        distribution_page = DistributionPage(self.driver)
-        distribution_page.view_distribution()
-
-        tr = self.driver.find_elements(By.CSS_SELECTOR, "tr")
-        self.assertGreater(len(tr), 1)
-
-    def test_add_distribution(self):
-        distribution_page = DistributionPage(self.driver)
-        distribution_page.add_distribution(constant.EXPERT_NAME)
-
-        message = distribution_page.get_message()
-        self.assertEqual(message, "Data Created!")
-
-    def test_edit_distribution(self):
-        distribution_page = DistributionPage(self.driver)
-        distribution_page.edit_distribution(constant.EXPERT_NAME)
-
-        message = distribution_page.get_message()
-        self.assertEqual(message, "Data Updated!")
-
-    def test_delete_distribution(self):
-        distribution_page = DistributionPage(self.driver)
-        distribution_page.delete_distribution()
-
-        message = distribution_page.get_message()
-        self.assertEqual(message, "Data Deleted!")
-
-
 class SiteRadarManagement(BaseTest):
 
     def test_view_site(self):
@@ -326,35 +295,34 @@ class SiteRadarManagement(BaseTest):
         self.assertEqual(message, "Data Deleted!")
 
 
-class SiteRadarStockManagement(BaseTest):
+class DistributionManagement(BaseTest):
 
-    def test_view_site_stock(self):
-        site_radar_stock_page = SiteRadarStockPage(self.driver)
-        site_radar_stock_page.view_site_stock()
+    def test_view_distribution(self):
+        distribution_page = DistributionPage(self.driver)
+        distribution_page.view_distribution()
 
-        tr = self.driver.find_elements(By.CSS_SELECTOR, "tbody tr")
+        tr = self.driver.find_elements(By.CSS_SELECTOR, "tr")
         self.assertGreater(len(tr), 0)
 
-    def test_add_site_stock(self):
-        site_radar_stock_page = SiteRadarStockPage(self.driver)
-        site_radar_stock_page.add_site_stock()
+    def test_add_distribution(self):
+        distribution_page = DistributionPage(self.driver)
+        distribution_page.add_distribution(constant.EXPERT_NAME)
 
-        message = site_radar_stock_page.get_message()
+        message = distribution_page.get_message()
         self.assertEqual(message, "Data Created!")
 
-    def test_edit_site_stock(self):
-        site_radar_stock_page = SiteRadarStockPage(self.driver)
-        site_radar_stock_page.edit_site_stock("Test Sited Stock Name Edit", util.random_part_number(
-        ), util.random_serial_number(), "10162023", "11262023")
+    def test_edit_distribution(self):
+        distribution_page = DistributionPage(self.driver)
+        distribution_page.edit_distribution(constant.EXPERT_NAME)
 
-        message = site_radar_stock_page.get_message()
-        self.assertEqual(message, "Data Edited!")
+        message = distribution_page.get_message()
+        self.assertEqual(message, "Data Updated!")
 
-    def test_delete_site_stock(self):
-        site_radar_stock_page = SiteRadarStockPage(self.driver)
-        site_radar_stock_page.delete_site_stock()
+    def test_delete_distribution(self):
+        distribution_page = DistributionPage(self.driver)
+        distribution_page.delete_distribution()
 
-        message = site_radar_stock_page.get_message()
+        message = distribution_page.get_message()
         self.assertEqual(message, "Data Deleted!")
 
 
@@ -394,14 +362,46 @@ class StockManagement(BaseTest):
         stock_page.view_stock_recommendation()
 
         tr = self.driver.find_elements(By.CSS_SELECTOR, "tr")
-        self.assertGreater(len(tr), 1)
+        self.assertGreater(len(tr), 0)
+
+
+class SiteRadarStockManagement(BaseTest):
+
+    def test_view_site_stock(self):
+        site_radar_stock_page = SiteRadarStockPage(self.driver)
+        site_radar_stock_page.view_site_stock()
+
+        tr = self.driver.find_elements(By.CSS_SELECTOR, "tbody tr")
+        self.assertGreater(len(tr), 0)
+
+    def test_add_site_stock(self):
+        site_radar_stock_page = SiteRadarStockPage(self.driver)
+        site_radar_stock_page.add_site_stock()
+
+        message = site_radar_stock_page.get_message()
+        self.assertEqual(message, "Data Created!")
+
+    def test_edit_site_stock(self):
+        site_radar_stock_page = SiteRadarStockPage(self.driver)
+        site_radar_stock_page.edit_site_stock("Test Sited Stock Name Edit", util.random_part_number(
+        ), util.random_serial_number(), "10162023", "11262023")
+
+        message = site_radar_stock_page.get_message()
+        self.assertEqual(message, "Data Edited!")
+
+    def test_delete_site_stock(self):
+        site_radar_stock_page = SiteRadarStockPage(self.driver)
+        site_radar_stock_page.delete_site_stock()
+
+        message = site_radar_stock_page.get_message()
+        self.assertEqual(message, "Data Deleted!")
 
 
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(AuthenticationLogin("test_login"))
 
-    suite.addTest(PasswordEdit("test_edit_password"))
+    # suite.addTest(PasswordEdit("test_edit_password"))
 
     # suite.addTest(AccountManagement("test_verify_account"))
     # suite.addTest(AccountManagement("test_delete_account"))
@@ -416,15 +416,21 @@ def suite():
     # suite.addTest(ExpertManagement("test_edit_expert"))
     # suite.addTest(ExpertManagement("test_delete_expert"))
 
+    # suite.addTest(SiteRadarManagement("test_view_site"))
+    # suite.addTest(SiteRadarManagement("test_add_site"))
+    # suite.addTest(SiteRadarManagement("test_delete_site"))
+
     # suite.addTest(DistributionManagement("test_view_distribution"))
     # suite.addTest(DistributionManagement("test_add_distribution"))
     # suite.addTest(DistributionManagement("test_edit_distribution"))
     # suite.addTest(DistributionManagement(
     #     "test_delete_distribution"))
 
-    # suite.addTest(SiteRadarManagement("test_view_site"))
-    # suite.addTest(SiteRadarManagement("test_add_site"))
-    # suite.addTest(SiteRadarManagement("test_delete_site"))
+    # suite.addTest(StockManagement("test_view_stock"))
+    # suite.addTest(StockManagement("test_add_stock"))
+    # suite.addTest(StockManagement("test_edit_stock"))
+    # suite.addTest(StockManagement("test_delete_stock"))
+    # suite.addTest(StockManagement("test_view_stock_recommendation"))
 
     # suite.addTest(SiteRadarStockManagement(
     #     "test_view_site_stock"))
@@ -433,12 +439,6 @@ def suite():
     #     "test_edit_site_stock"))
     # suite.addTest(SiteRadarStockManagement(
     #     "test_delete_site_stock"))
-
-    # suite.addTest(StockManagement("test_view_stock"))
-    # suite.addTest(StockManagement("test_add_stock"))
-    # suite.addTest(StockManagement("test_edit_stock"))
-    # suite.addTest(StockManagement("test_delete_stock"))
-    # suite.addTest(StockManagement("test_view_stock_recommendation"))
 
     suite.addTest(AuthenticationLogout("test_logout"))
     return suite

@@ -1,3 +1,4 @@
 __pycache__
 .venv
 .win-venv
+pyrightconfig.json

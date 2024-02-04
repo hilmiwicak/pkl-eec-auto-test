@@ -6,6 +6,7 @@ BASE_URL = "http://localhost:8000"
 
 EMAIL = "admin@eecid.com"
 PASSWORD = "secret"
+# default hashed password : $2y$10$y2jQOYSM9c3wVh9FTSsUgu3u9awe3qF9dCvjC08gNEwstULYbpqYS
 NEW_PASSWORD = " ©ƕǿȜ-? "
 
 EXPERT_NAME = "Test EEC Name"
