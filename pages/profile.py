@@ -15,10 +15,10 @@ class ProfilePage(BasePage):
 
         self.time.sleep(500/1000)
         self.driver.find_element(
-            "input-current-password").send_keys(current_password)
-        self.driver.find_element("input-password").send_keys(new_password)
+            self.By.ID, "input-current-password").send_keys(current_password)
+        self.driver.find_element(self.By.ID, "input-password").send_keys(new_password)
         self.driver.find_element(
-            "input-password-confirmation").send_keys(confirmation_password)
+            self.By.ID, "input-password-confirmation").send_keys(confirmation_password)
 
         super().click_submit_button_primary()
 

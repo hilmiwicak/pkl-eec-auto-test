@@ -23,11 +23,13 @@ class DistributionPage(BasePage):
         self.driver.find_element(self.By.CSS_SELECTOR,
                                  "a.btn.btn-primary").click()
 
-        distribution_sel_element = self.driver.find_element("site_id")
+        distribution_sel_element = self.driver.find_element(
+            self.By.ID, "site_id")
         distribution_sel = self.Select(distribution_sel_element)
         distribution_sel.select_by_index(1)
 
-        distribution_expert_element = self.driver.find_element("expert_id")
+        distribution_expert_element = self.driver.find_element(
+            self.By.ID, "expert_id")
         distribution_expert = self.Select(distribution_expert_element)
         distribution_expert.select_by_visible_text(name)
 
@@ -45,7 +47,8 @@ class DistributionPage(BasePage):
         self.driver.find_element(self.By.CSS_SELECTOR,
                                  "a.btn.btn-warning").click()
 
-        distribution_expert_element = self.driver.find_element("expert_id")
+        distribution_expert_element = self.driver.find_element(
+            self.By.ID, "expert_id")
         distribution_expert = self.Select(distribution_expert_element)
         distribution_expert.select_by_visible_text(name)
 

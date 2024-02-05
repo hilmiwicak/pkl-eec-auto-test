@@ -19,8 +19,8 @@ class ExpertPage(BasePage):
         ).click()
         self.driver.find_element(
             self.By.CSS_SELECTOR, "a.btn-primary").click()
-        self.driver.find_element("name").send_keys(name)
-        self.driver.find_element("nip").send_keys(nip)
+        self.driver.find_element(self.By.ID, "name").send_keys(name)
+        self.driver.find_element(self.By.ID, "nip").send_keys(nip)
 
         if expert_company is None:
             self.driver.find_element("eec_expert").click()
@@ -52,9 +52,9 @@ class ExpertPage(BasePage):
         self.driver.find_element(
             self.By.CSS_SELECTOR, "a.btn.btn-warning").click()
 
-        name = self.driver.find_element("name").get_attribute("value")
-        nip = self.driver.find_element("nip").get_attribute("value")
-        expert_company = self.driver.find_element("expert_company").get_attribute("value")
+        name = self.driver.find_element(self.By.ID, "name").get_attribute("value")
+        nip = self.driver.find_element(self.By.ID, "nip").get_attribute("value")
+        expert_company = self.driver.find_element(self.By.ID, "expert_company").get_attribute("value")
 
         return [name, nip, expert_company]
 

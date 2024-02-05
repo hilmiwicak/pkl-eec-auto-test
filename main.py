@@ -213,7 +213,7 @@ class ExpertManagement(BaseTest):
             message_nip = expert_page.get_message_nip_error()
             message_company = expert_page.get_message_company_error()
             self.assertEqual(message_name, "")
-            self.assertEqual(message_nip, "something")
+            self.assertEqual(message_nip, "EEC Expert must have 11 digits.")
             self.assertEqual(message_company, "")
 
         with self.subTest("5. empty"):
