@@ -168,7 +168,6 @@ class ExpertManagement(BaseTest):
 
     def test_add_expert(self):
         expert_page = ExpertPage(self.driver)
-        nip_eec_expert = util.random_nip_11()
 
         with self.subTest("1. name more than 15, nip less than 11, valid company"):
             expert_page.add_expert(
@@ -236,14 +235,14 @@ class ExpertManagement(BaseTest):
             self.assertEqual(message, "Data Created!")
 
         with self.subTest("7. correct inputs, eec expert"):
-            expert_page.add_expert(constant.EXPERT_NAME, nip_eec_expert)
+            expert_page.add_expert(constant.EXPERT_NAME, constant.EXPERT_NIP)
 
             message = expert_page.get_message()
             self.assertEqual(message, "Data Created!")
 
         # ERROR
         with self.subTest("8. same name, same nip, eec expert"):
-            expert_page.add_expert(constant.EXPERT_NAME, nip_eec_expert)
+            expert_page.add_expert(constant.EXPERT_NAME, constant.EXPERT_NIP)
 
             message_name = expert_page.get_message_name_error()
             message_nip = expert_page.get_message_nip_error()
@@ -282,11 +281,48 @@ class SiteRadarManagement(BaseTest):
 
     def test_add_site(self):
         site_radar_page = SiteRadarPage(self.driver)
-        site_radar_page.add_site()
 
-        message = site_radar_page.get_message()
-        self.assertEqual(message, "Data Created!")
+        # ERROR
+        with self.subTest("1. radar name not regular string, site id not regular string, image not image"):
+            site_radar_page.add_site(
+                "⽗⾇!-?2", "⽗⾇!-?2", constant.SITE_VIDEO_PATH)
 
+            message_radar_name = site_radar_page.get_message_radar_name_error()
+            message_station_id = site_radar_page.get_message_station_id_error()
+            message_image = site_radar_page.get_message_image_error()
+            self.assertEqual(message_radar_name, "")
+            self.assertEqual(message_station_id, "")
+            self.assertEqual(message_image, "The image must be an image.")
+
+        with self.subTest("2. empty"):
+            site_radar_page.add_site("", "", "")
+
+            message_radar_name = site_radar_page.get_message_radar_name_error()
+            message_station_id = site_radar_page.get_message_station_id_error()
+            message_image = site_radar_page.get_message_image_error()
+            self.assertEqual(message_radar_name,
+                             "The radar name field is required.")
+            self.assertEqual(message_station_id,
+                             "The station id field is required.")
+            self.assertEqual(message_image, "")
+
+        with self.subTest("3. correct inputs"):
+            site_radar_page.add_site(
+                constant.SITE_NAME, constant.SITE_LOCATION, constant.SITE_IMAGE_PATH)
+
+            message = site_radar_page.get_message()
+            self.assertEqual(message, "Data Created!")
+
+        # outside skripsi
+        # adds one more site for test_delete_site and SiteRadarStockManagement
+        with self.subTest():
+            site_radar_page.add_site(
+                constant.SITE_NAME, constant.SITE_LOCATION, constant.SITE_IMAGE_PATH)
+
+            message = site_radar_page.get_message()
+            self.assertEqual(message, "Data Created!")
+
+    # dependent of add_site
     def test_delete_site(self):
         site_radar_page = SiteRadarPage(self.driver)
         site_radar_page.delete_site()
@@ -416,9 +452,9 @@ def suite():
     # suite.addTest(ExpertManagement("test_edit_expert"))
     # suite.addTest(ExpertManagement("test_delete_expert"))
 
-    # suite.addTest(SiteRadarManagement("test_view_site"))
-    # suite.addTest(SiteRadarManagement("test_add_site"))
-    # suite.addTest(SiteRadarManagement("test_delete_site"))
+    suite.addTest(SiteRadarManagement("test_view_site"))
+    suite.addTest(SiteRadarManagement("test_add_site"))
+    suite.addTest(SiteRadarManagement("test_delete_site"))
 
     # suite.addTest(DistributionManagement("test_view_distribution"))
     # suite.addTest(DistributionManagement("test_add_distribution"))

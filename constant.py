@@ -1,3 +1,5 @@
+import util
+
 DRIVER_PATH = r"C:\Users\Hilmi\dev-projects\skripsi-selenium\chromedriver_win32\chromedriver.exe"
 CHROME_PATH = r"C:\Users\Hilmi\dev-projects\skripsi-selenium\chrome-10905414120\chrome.exe"
 CHROME_DATA = r"user-data-dir=C:\Users\Hilmi\AppData\Local\Chromium\User Data"
@@ -10,6 +12,9 @@ PASSWORD = "secret"
 NEW_PASSWORD = " ©ƕǿȜ-? "
 
 EXPERT_NAME = "Test EEC Name"
+EXPERT_NIP = util.random_nip_11()
 
 SITE_IMAGE_PATH = r"C:\Users\Hilmi\dev-projects\skripsi-selenium\skripsi-src\resources\radar.jpeg"
+SITE_VIDEO_PATH = r"C:\Users\Hilmi\dev-projects\skripsi-selenium\skripsi-src\resources\video.mp4"
 SITE_LOCATION = "Test Location"
+SITE_NAME = "Test Site Name"

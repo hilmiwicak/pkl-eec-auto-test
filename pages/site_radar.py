@@ -10,7 +10,7 @@ class SiteRadarPage(BasePage):
             self.constant.BASE_URL + "/site']"
         ).click()
 
-    def add_site(self):
+    def add_site(self, radar_name, site_id, image_path):
         super().open_home()
         self.driver.find_element(
             self.By.CSS_SELECTOR, "a.nav-link[href='" +
@@ -18,11 +18,12 @@ class SiteRadarPage(BasePage):
         ).click()
         self.driver.find_element(
             self.By.CSS_SELECTOR, "a.btn-primary").click()
-        self.driver.find_element("radar_name").send_keys("Test Radar Site")
-        self.driver.find_element("station_id").send_keys(
-            self.constant.SITE_LOCATION)
-        self.driver.find_element("image").send_keys(
-            self.constant.SITE_IMAGE_PATH)
+
+        self.driver.find_element(
+            self.By.ID, "radar_name").send_keys(radar_name)
+        self.driver.find_element(self.By.ID, "station_id").send_keys(site_id)
+        if image_path != "":
+            self.driver.find_element(self.By.ID, "image").send_keys(image_path)
 
         # selects stock with index 1 (random)
         stock_site_element = self.driver.find_element(
@@ -50,3 +51,33 @@ class SiteRadarPage(BasePage):
         button_element.location_once_scrolled_into_view
         button_element.click()
         self.driver.switch_to.alert.accept()
+
+    def get_message_radar_name_error(self):
+        try:
+            message_el = self.driver.find_element(
+                self.By.XPATH,
+                "//input[contains(@name, 'radar_name')]/..//div[@class='invalid-feedback']"
+            )
+            return message_el.text
+        except self.NoSuchElementException:
+            return ""
+
+    def get_message_station_id_error(self):
+        try:
+            message_el = self.driver.find_element(
+                self.By.XPATH,
+                "//input[contains(@name, 'station_id')]/..//div[@class='invalid-feedback']"
+            )
+            return message_el.text
+        except self.NoSuchElementException:
+            return ""
+
+    def get_message_image_error(self):
+        try:
+            message_el = self.driver.find_element(
+                self.By.XPATH,
+                "//input[@id='image']/..//div[@class='invalid-feedback']"
+            )
+            return message_el.text
+        except self.NoSuchElementException:
+            return ""
