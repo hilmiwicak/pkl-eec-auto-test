@@ -335,24 +335,62 @@ class DistributionManagement(BaseTest):
 
     def test_view_distribution(self):
         distribution_page = DistributionPage(self.driver)
-        distribution_page.view_distribution()
 
-        tr = self.driver.find_elements(By.CSS_SELECTOR, "tr")
-        self.assertGreater(len(tr), 0)
+        radar_name_view = distribution_page.view_distribution_list_radar_name()
+        radar_name_detail = distribution_page.view_distribution_detail_radar_name()
 
+        self.assertEqual(radar_name_view, radar_name_detail)
+
+    # dependent of add_expert for subtest 2
     def test_add_distribution(self):
         distribution_page = DistributionPage(self.driver)
-        distribution_page.add_distribution(constant.EXPERT_NAME)
 
-        message = distribution_page.get_message()
-        self.assertEqual(message, "Data Created!")
+        with self.subTest("1. checking wheter the name in the view is not on the add form"):
+            name_from_view, name_list_from_select_add = distribution_page.add_distribution_detail()
+
+            self.assertNotIn(name_from_view, name_list_from_select_add)
+
+        with self.subTest("2. empty inputs"):
+            distribution_page.add_distribution("", "")
+
+            message_site_id = distribution_page.get_message_site_id_error()
+            message_expert_id = distribution_page.get_message_expert_id_error()
+            self.assertEqual(message_site_id, "The site id field is required.")
+            self.assertEqual(message_expert_id, "The expert id field is required.")
+
+        with self.subTest("3. correct inputs"):
+            distribution_page.add_distribution(1, 1)
+
+            message = distribution_page.get_message()
+            self.assertEqual(message, "Data Created!")
+
+        # outside skripsi
+        # adds one more random expert distribution for test_delete_distribution and test_edit_distribution
+        with self.subTest():
+            distribution_page.add_distribution(1, 1)
+
+            message = distribution_page.get_message()
+            self.assertEqual(message, "Data Created!")
 
     def test_edit_distribution(self):
         distribution_page = DistributionPage(self.driver)
-        distribution_page.edit_distribution(constant.EXPERT_NAME)
 
-        message = distribution_page.get_message()
-        self.assertEqual(message, "Data Updated!")
+        with self.subTest("1. checking wheter the name in the view is not on the detail"):
+            name_from_view, name_list_from_select_detail = distribution_page.edit_distribution_detail()
+
+            self.assertNotIn(name_from_view, name_list_from_select_detail)
+
+        with self.subTest("2. empty inputs"):
+            distribution_page.edit_distribution("")
+
+            message_expert_id = distribution_page.get_message_expert_id_error()
+            self.assertEqual(message_expert_id, "The expert id field is required.")
+
+        with self.subTest("3. correct inputs"):
+            distribution_page.edit_distribution(1)
+
+            message = distribution_page.get_message()
+            self.assertEqual(message, "Data Updated!")
 
     def test_delete_distribution(self):
         distribution_page = DistributionPage(self.driver)
@@ -452,15 +490,15 @@ def suite():
     # suite.addTest(ExpertManagement("test_edit_expert"))
     # suite.addTest(ExpertManagement("test_delete_expert"))
 
-    suite.addTest(SiteRadarManagement("test_view_site"))
-    suite.addTest(SiteRadarManagement("test_add_site"))
-    suite.addTest(SiteRadarManagement("test_delete_site"))
+    # suite.addTest(SiteRadarManagement("test_view_site"))
+    # suite.addTest(SiteRadarManagement("test_add_site"))
+    # suite.addTest(SiteRadarManagement("test_delete_site"))
 
-    # suite.addTest(DistributionManagement("test_view_distribution"))
-    # suite.addTest(DistributionManagement("test_add_distribution"))
-    # suite.addTest(DistributionManagement("test_edit_distribution"))
-    # suite.addTest(DistributionManagement(
-    #     "test_delete_distribution"))
+    suite.addTest(DistributionManagement("test_view_distribution"))
+    suite.addTest(DistributionManagement("test_add_distribution"))
+    suite.addTest(DistributionManagement("test_edit_distribution"))
+    suite.addTest(DistributionManagement(
+        "test_delete_distribution"))
 
     # suite.addTest(StockManagement("test_view_stock"))
     # suite.addTest(StockManagement("test_add_stock"))
