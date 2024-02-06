@@ -130,8 +130,8 @@ class MaintenanceManagement(BaseTest):
         pm_page = MaintenancePage(self.driver)
         pm_page.view_pm()
 
-        tr = self.driver.find_elements(By.CSS_SELECTOR, "tr")
-        self.assertGreater(len(tr), 0)
+        table_empty = pm_page.get_data_table_empty()
+        self.assertEqual(table_empty, "")
 
     def test_view_detail_pm(self):
         pm_page = MaintenancePage(self.driver)
@@ -145,8 +145,8 @@ class MaintenanceManagement(BaseTest):
         cm_page = MaintenancePage(self.driver)
         cm_page.view_cm()
 
-        tr = self.driver.find_elements(By.CSS_SELECTOR, "tr")
-        self.assertGreater(len(tr), 0)
+        table_empty = cm_page.get_data_table_empty()
+        self.assertEqual(table_empty, "")
 
     def test_view_detail_cm(self):
         cm_page = MaintenancePage(self.driver)
@@ -163,8 +163,8 @@ class ExpertManagement(BaseTest):
         expert_page = ExpertPage(self.driver)
         expert_page.view_expert()
 
-        tr = self.driver.find_elements(By.CSS_SELECTOR, "tr")
-        self.assertGreater(len(tr), 0)
+        table_empty = expert_page.get_data_table_empty()
+        self.assertEqual(table_empty, "")
 
     def test_add_expert(self):
         expert_page = ExpertPage(self.driver)
@@ -368,8 +368,8 @@ class StockManagement(BaseTest):
         stock_page = StockPage(self.driver)
         stock_page.view_stock()
 
-        tr = self.driver.find_elements(By.CSS_SELECTOR, "tr")
-        self.assertGreater(len(tr), 0)
+        table_empty = stock_page.get_data_table_empty()
+        self.assertEqual(table_empty, "")
 
     def test_add_stock(self):
         stock_page = StockPage(self.driver)
@@ -397,8 +397,8 @@ class StockManagement(BaseTest):
         stock_page = StockPage(self.driver)
         stock_page.view_stock_recommendation()
 
-        tr = self.driver.find_elements(By.CSS_SELECTOR, "tr")
-        self.assertGreater(len(tr), 0)
+        table_empty = stock_page.get_data_table_empty()
+        self.assertEqual(table_empty, "")
 
 
 class SiteRadarStockManagement(BaseTest):

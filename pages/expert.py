@@ -1,5 +1,4 @@
 from pages.base_page import BasePage
-from typing import List
 
 
 class ExpertPage(BasePage):
@@ -31,7 +30,7 @@ class ExpertPage(BasePage):
         super().click_submit_button_primary()
         self.driver.switch_to.alert.accept()
 
-    def view_expert_detail(self) -> List[str]:
+    def view_expert_detail(self):
         super().open_home()
         self.driver.find_element(
             self.By.CSS_SELECTOR, "a.nav-link[href='" +
@@ -43,7 +42,7 @@ class ExpertPage(BasePage):
         expert_company = tr_elements[2].text
         return [name, nip, expert_company]
 
-    def edit_expert_detail(self) -> List[str]:
+    def edit_expert_detail(self):
         super().open_home()
         self.driver.find_element(
             self.By.CSS_SELECTOR, "a.nav-link[href='" +

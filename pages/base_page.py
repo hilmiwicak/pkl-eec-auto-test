@@ -33,3 +33,10 @@ class BasePage:
     def get_message(self):
         return self.driver.find_element(
             self.By.CSS_SELECTOR, "span[data-notify='message']").text
+
+    def get_data_table_empty(self):
+        try:
+            return self.driver.find_element(
+                self.By.CSS_SELECTOR, "td.dataTables_empty").text
+        except self.NoSuchElementException:
+            return ""
