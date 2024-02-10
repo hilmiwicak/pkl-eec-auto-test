@@ -506,7 +506,7 @@ class StockManagement(BaseTest):
                 kurs_beli=True,
                 jumlah_unit=4,
                 status=1,
-                keterangan="1 di kantor, 3 di gudang",
+                keterangan="Lorem ipsum dolor sit amet, qui minim labore adipisicing minim sint cillum sint consectetur cupidatat.",
             )
 
             message = stock_page.get_message()
@@ -515,11 +515,119 @@ class StockManagement(BaseTest):
     def test_edit_stock(self):
         stock_page = StockPage(self.driver)
 
-        with self.subTest(""):
-            stock_page.edit_stock()
+        tgl_masuk_invalid, expired_invalid = util.random_invalid_tgl_masuk_and_expired()
+        tgl_masuk_valid, expired_valid = util.random_valid_tgl_masuk_and_expired()
+
+        with self.subTest("1. checking whether the data in the list view is the same as in the edit form"):
+            stock_view = stock_page.edit_stock_list()
+            stock_edit = stock_page.edit_stock_detail()
+
+            self.assertEqual(stock_view["nama_barang"], stock_edit["nama_barang"])
+            self.assertEqual(stock_view["group"], stock_edit["group"])
+            self.assertEqual(stock_view["part_number"], stock_edit["part_number"])
+            self.assertEqual(stock_view["ref_des"], stock_edit["ref_des"])
+            self.assertEqual(stock_view["tgl_masuk"], stock_edit["tgl_masuk"])
+            self.assertEqual(stock_view["expired"], stock_edit["expired"])
+            self.assertEqual(stock_view["kurs_beli"], stock_edit["kurs_beli"])
+            self.assertEqual(stock_view["jumlah_unit"], stock_edit["jumlah_unit"])
+            self.assertEqual(stock_view["status"], stock_edit["status"])
+            self.assertEqual(stock_view["keterangan"], stock_edit["keterangan"])
+
+        with self.subTest("2. string inputs not regular characters, kurs beli not number, jumlah unit not integer, expired date before tgl masuk"):
+            stock_page.add_stock(
+                nama_barang="1-?ⴙ⺻✷⤵≣⼺⥊ⅿ⇆⌂⹁⊹⣁ⰴ⻏⥺⪈",
+                group="1-?☉⛓∫ⰶ⦿ⶪ⪧⪪",
+                part_number="PL-3-?ⶪ⪧⪪⼺⥊ⅿ⇆",
+                ref_des="⽗⾇q?ⶪ⪧⪪⼺",
+                tgl_masuk=tgl_masuk_invalid,
+                expired=expired_invalid,
+                kurs_beli="abc",
+                jumlah_unit="abc",
+                status=1,
+                keterangan="1-?☉⛓∫ⰶ⦿ⶪ⪧⪪",
+            )
+
+            message_nama_barang = stock_page.get_message_nama_barang_error()
+            message_group = stock_page.get_message_group_error()
+            message_part_number = stock_page.get_message_part_number_error()
+            message_ref_des = stock_page.get_message_ref_des_error()
+            message_tgl_masuk = stock_page.get_message_tgl_masuk_error()
+            message_expired_date = stock_page.get_message_expired_date_error()
+            message_kurs_beli = stock_page.get_message_kurs_beli_error()
+            message_jumlah_unit = stock_page.get_message_jumlah_unit_error()
+            message_status = stock_page.get_message_status_error()
+            message_keterangan = stock_page.get_message_keterangan_error()
+            self.assertEqual(message_nama_barang, "")
+            self.assertEqual(message_group, "")
+            self.assertEqual(message_part_number, "")
+            self.assertEqual(message_ref_des, "")
+            self.assertEqual(message_tgl_masuk, "")
+            self.assertEqual(
+                message_expired_date, "The expired must be a date after or equal to tgl masuk.")
+            self.assertEqual(message_kurs_beli,
+                             "The kurs beli must be a number.")
+            self.assertEqual(
+                message_jumlah_unit, "The jumlah unit must be an integer.")
+            self.assertEqual(message_status, "")
+            self.assertEqual(message_keterangan, "")
+
+        with self.subTest("3. empty inputs"):
+            stock_page.add_stock(
+                nama_barang="",
+                group="",
+                part_number="",
+                ref_des="",
+                tgl_masuk="",
+                expired="",
+                kurs_beli="",
+                jumlah_unit="",
+                status="",
+                keterangan="",
+            )
+
+            message_nama_barang = stock_page.get_message_nama_barang_error()
+            message_group = stock_page.get_message_group_error()
+            message_part_number = stock_page.get_message_part_number_error()
+            message_ref_des = stock_page.get_message_ref_des_error()
+            message_tgl_masuk = stock_page.get_message_tgl_masuk_error()
+            message_expired_date = stock_page.get_message_expired_date_error()
+            message_kurs_beli = stock_page.get_message_kurs_beli_error()
+            message_jumlah_unit = stock_page.get_message_jumlah_unit_error()
+            message_status = stock_page.get_message_status_error()
+            message_keterangan = stock_page.get_message_keterangan_error()
+            self.assertEqual(
+                message_nama_barang, "The nama barang field is required.")
+            self.assertEqual(message_group, "The group field is required.")
+            self.assertEqual(
+                message_part_number, "The part number field is required.")
+            self.assertEqual(message_ref_des, "The ref des field is required.")
+            self.assertEqual(message_tgl_masuk, "")
+            self.assertEqual(message_expired_date,
+                             "The expired field is required.")
+            self.assertEqual(message_kurs_beli, "")
+            self.assertEqual(
+                message_jumlah_unit, "The jumlah unit field is required.")
+            self.assertEqual(message_status, "The status field is required.")
+            self.assertEqual(message_keterangan,
+                             "The keterangan field is required.")
+
+        with self.subTest("4. correct inputs"):
+            stock_page.add_stock(
+                nama_barang="Test Name",
+                group=1,
+                part_number=util.random_part_number(),
+                ref_des=util.random_ref_des(),
+                tgl_masuk=tgl_masuk_valid,
+                expired=expired_valid,
+                kurs_beli=True,
+                jumlah_unit=4,
+                status=1,
+                keterangan="Lorem ipsum dolor sit amet, qui minim labore adipisicing minim sint cillum sint consectetur cupidatat.",
+            )
 
             message = stock_page.get_message()
-            self.assertEqual(message, "Data berhasil di update")
+            self.assertEqual(message, "Data berhasil ditambah!")
+
 
     def test_delete_stock(self):
         stock_page = StockPage(self.driver)
@@ -598,9 +706,9 @@ def suite():
     #     "test_delete_distribution"))
 
     # suite.addTest(StockManagement("test_view_stock"))
-    suite.addTest(StockManagement("test_add_stock"))
-    suite.addTest(StockManagement("test_edit_stock"))
-    # suite.addTest(StockManagement("test_delete_stock"))
+    # suite.addTest(StockManagement("test_add_stock"))
+    # suite.addTest(StockManagement("test_edit_stock"))
+    suite.addTest(StockManagement("test_delete_stock"))
     # suite.addTest(StockManagement("test_view_stock_recommendation"))
 
     # suite.addTest(SiteRadarStockManagement(

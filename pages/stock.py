@@ -122,6 +122,130 @@ class StockPage(BasePage):
 
         super().click_submit_button_primary()
 
+    def edit_stock_list(self):
+        super().open_home()
+        self.driver.find_element(
+            self.By.CSS_SELECTOR, "a.nav-link[href='" +
+            self.constant.BASE_URL + "/stocks']"
+        ).click()
+
+        tr_el = self.driver.find_element(
+            self.By.CSS_SELECTOR, "tbody tr:nth-child(1)")
+
+        tr_el.find_element(self.By.CSS_SELECTOR, ".sorting_1").click()
+
+        tr_hidden = self.driver.find_element(
+            self.By.CSS_SELECTOR, "tbody tr.child")
+
+        nama_barang = tr_el.find_element(
+            self.By.CSS_SELECTOR, "td:nth-child(2)").text
+        group = tr_el.find_element(
+            self.By.CSS_SELECTOR, "td:nth-child(3)").text
+        part_number = tr_hidden.find_element(
+            self.By.CSS_SELECTOR, "li[data-dt-column='3'] span.dtr-data").text
+        ref_des = tr_hidden.find_element(
+            self.By.CSS_SELECTOR, "li[data-dt-column='4'] span.dtr-data").text
+        tgl_masuk = tr_hidden.find_element(
+            self.By.CSS_SELECTOR, "li[data-dt-column='5'] span.dtr-data").text
+        expired = tr_hidden.find_element(
+            self.By.CSS_SELECTOR, "li[data-dt-column='6'] span.dtr-data").text
+        kurs_beli = tr_el.find_element(
+            self.By.CSS_SELECTOR, "td:nth-child(8)").text
+        jumlah_unit = tr_el.find_element(
+            self.By.CSS_SELECTOR, "td:nth-child(9)").text
+        status = tr_el.find_element(
+            self.By.CSS_SELECTOR, "td:nth-child(10)").text
+        keterangan = tr_hidden.find_element(
+            self.By.CSS_SELECTOR, "li[data-dt-column='10'] span.dtr-data").text
+
+        return {
+            "nama_barang": nama_barang,
+            "group": group,
+            "part_number": part_number,
+            "ref_des": ref_des,
+            "tgl_masuk": tgl_masuk,
+            "expired": expired,
+            "kurs_beli": kurs_beli,
+            "jumlah_unit": jumlah_unit,
+            "status": status,
+            "keterangan": keterangan
+        }
+
+    def edit_stock_detail(self):
+        super().open_home()
+        self.driver.find_element(
+            self.By.CSS_SELECTOR, "a.nav-link[href='" +
+            self.constant.BASE_URL + "/stocks']"
+        ).click()
+
+        tr_el = self.driver.find_element(
+            self.By.CSS_SELECTOR, "tbody tr:nth-child(1)")
+
+        tr_el.find_element(self.By.CSS_SELECTOR, "a.btn.btn-warning").click()
+
+        nama_barang_el = self.driver.find_element(
+            self.By.ID, "nama_barang")
+        nama_barang_el.location_once_scrolled_into_view
+        nama_barang = nama_barang_el.get_attribute("value")
+
+        group_select_el = self.driver.find_element(self.By.ID, "group")
+        group_select_el.location_once_scrolled_into_view
+        group_select = self.Select(group_select_el)
+        group = group_select.all_selected_options[0].text
+
+        part_number_el = self.driver.find_element(
+            self.By.ID, "part_number")
+        part_number_el.location_once_scrolled_into_view
+        part_number = part_number_el.get_attribute("value")
+
+        ref_des_el = self.driver.find_element(
+            self.By.ID, "ref_des")
+        ref_des_el.location_once_scrolled_into_view
+        ref_des = ref_des_el.get_attribute("value")
+
+        tgl_masuk_el = self.driver.find_element(
+            self.By.ID, "tgl_masuk")
+        tgl_masuk_el.location_once_scrolled_into_view
+        tgl_masuk = tgl_masuk_el.get_attribute("value")
+
+        expired_el = self.driver.find_element(
+            self.By.ID, "expired")
+        expired_el.location_once_scrolled_into_view
+        expired = expired_el.get_attribute("value")
+
+        kurs_beli_el = self.driver.find_element(
+            self.By.ID, "kurs_beli")
+        kurs_beli_el.location_once_scrolled_into_view
+        kurs_beli = kurs_beli_el.get_attribute("value")
+
+        jumlah_unit_el = self.driver.find_element(
+            self.By.ID, "jumlah_unit")
+        jumlah_unit_el.location_once_scrolled_into_view
+        jumlah_unit = jumlah_unit_el.get_attribute("value")
+
+        stock_status_el = self.driver.find_element(self.By.ID, "status")
+        stock_status_el.location_once_scrolled_into_view
+        stock_status_select = self.Select(stock_status_el)
+        status = stock_status_select.all_selected_options[0].text
+
+        keterangan_el = self.driver.find_element(
+            self.By.ID, "keterangan")
+        keterangan_el.location_once_scrolled_into_view
+        keterangan = keterangan_el.get_attribute("value")
+
+        return {
+            "nama_barang": nama_barang,
+            "group": group,
+            "part_number": part_number,
+            "ref_des": ref_des,
+            "tgl_masuk": tgl_masuk,
+            "expired": expired,
+            "kurs_beli": kurs_beli,
+            "jumlah_unit": jumlah_unit,
+            "status": status,
+            "keterangan": keterangan
+        }
+
     def edit_stock(self, nama_barang, group, part_number, ref_des, tgl_masuk, expired, kurs_beli, jumlah_unit, status, keterangan):
         super().open_home()
         self.driver.find_element(
@@ -130,9 +254,7 @@ class StockPage(BasePage):
         ).click()
 
         self.driver.find_element(
-            self.By.CSS_SELECTOR,
-            "a.btn-outline-primary[data-original-title='add item']"
-        ).click()
+            self.By.CSS_SELECTOR, "a.btn.btn-warning").click()
 
         if nama_barang != "":
             nama_barang_el = self.driver.find_element(

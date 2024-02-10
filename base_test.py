@@ -21,6 +21,7 @@ class BaseTest(unittest.TestCase):
 
         self.driver = webdriver.Chrome(options=chrome_opt, service=service_obj)
         self.driver.implicitly_wait(5)
+        self.maxDiff = None
 
     def tearDown(self):
         self.driver.close()
