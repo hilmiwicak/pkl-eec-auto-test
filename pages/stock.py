@@ -256,10 +256,12 @@ class StockPage(BasePage):
         self.driver.find_element(
             self.By.CSS_SELECTOR, "a.btn.btn-warning").click()
 
+        nama_barang_el = self.driver.find_element(
+            self.By.ID, "nama_barang")
+        nama_barang_el.location_once_scrolled_into_view
+        nama_barang_el.clear()
+
         if nama_barang != "":
-            nama_barang_el = self.driver.find_element(
-                self.By.ID, "nama_barang")
-            nama_barang_el.location_once_scrolled_into_view
             nama_barang_el.send_keys(nama_barang)
 
         # the selection is usually random
@@ -277,31 +279,43 @@ class StockPage(BasePage):
             self.driver.find_element(
                 self.By.CSS_SELECTOR, "input.select2-search__field").send_keys(self.Keys.ENTER)
 
+        part_number_el = self.driver.find_element(
+            self.By.ID, "part_number")
+        part_number_el.location_once_scrolled_into_view
+        part_number_el.clear()
+
         if part_number != "":
-            part_number_el = self.driver.find_element(
-                self.By.ID, "part_number")
-            part_number_el.location_once_scrolled_into_view
             part_number_el.send_keys(part_number)
 
+        ref_des_el = self.driver.find_element(
+            self.By.ID, "ref_des")
+        ref_des_el.location_once_scrolled_into_view
+        ref_des_el.clear()
+
         if ref_des != "":
-            ref_des_el = self.driver.find_element(
-                self.By.ID, "ref_des")
-            ref_des_el.location_once_scrolled_into_view
             ref_des_el.send_keys(ref_des)
 
+        tgl_masuk_el = self.driver.find_element(
+            self.By.ID, "tgl_masuk")
+        tgl_masuk_el.location_once_scrolled_into_view
+
         if tgl_masuk != "":
-            tgl_masuk_el = self.driver.find_element(
-                self.By.ID, "tgl_masuk")
-            tgl_masuk_el.location_once_scrolled_into_view
             tgl_masuk_el.send_keys(tgl_masuk)
 
+        expired_el = self.driver.find_element(
+            self.By.ID, "expired")
+        expired_el.location_once_scrolled_into_view
+        expired_el.clear()
+
         if expired != "":
-            expired_el = self.driver.find_element(
-                self.By.ID, "expired")
-            expired_el.location_once_scrolled_into_view
             expired_el.send_keys(expired)
 
         if (type(kurs_beli) == int) or (type(kurs_beli) == str):
+
+            kurs_beli_el = self.driver.find_element(
+                self.By.ID, "kurs_beli")
+            kurs_beli_el.location_once_scrolled_into_view
+            kurs_beli_el.clear()
 
             if kurs_beli != "":
                 kurs_beli_el = self.driver.find_element(
@@ -309,19 +323,14 @@ class StockPage(BasePage):
                 kurs_beli_el.location_once_scrolled_into_view
                 kurs_beli_el.send_keys(kurs_beli)
 
-        elif kurs_beli == True:
-            button_kurs_beli_el = self.driver.find_element(
-                self.By.ID, "button_kurs_beli")
-            button_kurs_beli_el.location_once_scrolled_into_view
-            button_kurs_beli_el.click()
-
         if (type(jumlah_unit) == int) or (type(kurs_beli) == str):
 
-            if jumlah_unit != "":
+            jumlah_unit_el = self.driver.find_element(
+                self.By.ID, "jumlah_unit")
+            jumlah_unit_el.location_once_scrolled_into_view
+            jumlah_unit_el.clear()
 
-                jumlah_unit_el = self.driver.find_element(
-                    self.By.ID, "jumlah_unit")
-                jumlah_unit_el.location_once_scrolled_into_view
+            if jumlah_unit != "":
                 jumlah_unit_el.send_keys(jumlah_unit)
 
         stock_status_element = self.driver.find_element(self.By.ID, "status")
@@ -339,6 +348,11 @@ class StockPage(BasePage):
                 self.By.ID, "keterangan")
             keterangan_el.location_once_scrolled_into_view
             keterangan_el.send_keys(keterangan)
+        elif keterangan == "":
+            keterangan_el = self.driver.find_element(
+                self.By.ID, "keterangan")
+            keterangan_el.location_once_scrolled_into_view
+            keterangan_el.clear()
 
         super().click_submit_button_primary()
 

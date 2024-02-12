@@ -3,7 +3,7 @@ from pages.base_page import BasePage
 
 class SiteRadarStockPage(BasePage):
     # this page is running only if there is site location constant.SITE_LOCATION
-    # with site name "Test Radar Site"
+    # with site name "Test Radar Site" or constant.SITE_LOCATION
 
     def view_site_stock(self):
         super().open_home()

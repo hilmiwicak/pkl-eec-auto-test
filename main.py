@@ -512,12 +512,48 @@ class StockManagement(BaseTest):
             message = stock_page.get_message()
             self.assertEqual(message, "Data berhasil ditambah!")
 
+        # outside skripsi
+        # adds two more stock for test_add_site_stock
+        with self.subTest(""):
+            stock_page.add_stock(
+                nama_barang=constant.STOCK_NAME_0,
+                group=1,
+                part_number=util.random_part_number(),
+                ref_des=util.random_ref_des(),
+                tgl_masuk=tgl_masuk_valid,
+                expired=expired_valid,
+                kurs_beli=True,
+                jumlah_unit=0,
+                status=1,
+                keterangan="Lorem ipsum dolor sit amet, qui minim labore adipisicing minim sint cillum sint consectetur cupidatat.",
+            )
+
+            message = stock_page.get_message()
+            self.assertEqual(message, "Data berhasil ditambah!")
+
+            stock_page.add_stock(
+                nama_barang=constant.STOCK_NAME_3,
+                group=1,
+                part_number=util.random_part_number(),
+                ref_des=util.random_ref_des(),
+                tgl_masuk=tgl_masuk_valid,
+                expired=expired_valid,
+                kurs_beli=True,
+                jumlah_unit=3,
+                status=1,
+                keterangan="Lorem ipsum dolor sit amet, qui minim labore adipisicing minim sint cillum sint consectetur cupidatat.",
+            )
+
+            message = stock_page.get_message()
+            self.assertEqual(message, "Data berhasil ditambah!")
+
     def test_edit_stock(self):
         stock_page = StockPage(self.driver)
 
         tgl_masuk_invalid, expired_invalid = util.random_invalid_tgl_masuk_and_expired()
         tgl_masuk_valid, expired_valid = util.random_valid_tgl_masuk_and_expired()
 
+        # SOMETIMES ERROR
         with self.subTest("1. checking whether the data in the list view is the same as in the edit form"):
             stock_view = stock_page.edit_stock_list()
             stock_edit = stock_page.edit_stock_detail()
@@ -534,7 +570,7 @@ class StockManagement(BaseTest):
             self.assertEqual(stock_view["keterangan"], stock_edit["keterangan"])
 
         with self.subTest("2. string inputs not regular characters, kurs beli not number, jumlah unit not integer, expired date before tgl masuk"):
-            stock_page.add_stock(
+            stock_page.edit_stock(
                 nama_barang="1-?ⴙ⺻✷⤵≣⼺⥊ⅿ⇆⌂⹁⊹⣁ⰴ⻏⥺⪈",
                 group="1-?☉⛓∫ⰶ⦿ⶪ⪧⪪",
                 part_number="PL-3-?ⶪ⪧⪪⼺⥊ⅿ⇆",
@@ -572,7 +608,7 @@ class StockManagement(BaseTest):
             self.assertEqual(message_keterangan, "")
 
         with self.subTest("3. empty inputs"):
-            stock_page.add_stock(
+            stock_page.edit_stock(
                 nama_barang="",
                 group="",
                 part_number="",
@@ -597,7 +633,7 @@ class StockManagement(BaseTest):
             message_keterangan = stock_page.get_message_keterangan_error()
             self.assertEqual(
                 message_nama_barang, "The nama barang field is required.")
-            self.assertEqual(message_group, "The group field is required.")
+            self.assertEqual(message_group, "")
             self.assertEqual(
                 message_part_number, "The part number field is required.")
             self.assertEqual(message_ref_des, "The ref des field is required.")
@@ -607,12 +643,12 @@ class StockManagement(BaseTest):
             self.assertEqual(message_kurs_beli, "")
             self.assertEqual(
                 message_jumlah_unit, "The jumlah unit field is required.")
-            self.assertEqual(message_status, "The status field is required.")
+            self.assertEqual(message_status, "")
             self.assertEqual(message_keterangan,
                              "The keterangan field is required.")
 
         with self.subTest("4. correct inputs"):
-            stock_page.add_stock(
+            stock_page.edit_stock(
                 nama_barang="Test Name",
                 group=1,
                 part_number=util.random_part_number(),
@@ -626,8 +662,7 @@ class StockManagement(BaseTest):
             )
 
             message = stock_page.get_message()
-            self.assertEqual(message, "Data berhasil ditambah!")
-
+            self.assertEqual(message, "Data berhasil di update")
 
     def test_delete_stock(self):
         stock_page = StockPage(self.driver)
@@ -644,14 +679,15 @@ class StockManagement(BaseTest):
         self.assertEqual(table_empty, "")
 
 
+# dependent of add_site
 class SiteRadarStockManagement(BaseTest):
 
     def test_view_site_stock(self):
         site_radar_stock_page = SiteRadarStockPage(self.driver)
         site_radar_stock_page.view_site_stock()
 
-        tr = self.driver.find_elements(By.CSS_SELECTOR, "tbody tr")
-        self.assertGreater(len(tr), 0)
+        table_empty = site_radar_stock_page.get_data_table_empty()
+        self.assertTrue(table_empty == "" or table_empty == "No data available in table")
 
     def test_add_site_stock(self):
         site_radar_stock_page = SiteRadarStockPage(self.driver)
@@ -705,11 +741,11 @@ def suite():
     # suite.addTest(DistributionManagement(
     #     "test_delete_distribution"))
 
-    # suite.addTest(StockManagement("test_view_stock"))
-    # suite.addTest(StockManagement("test_add_stock"))
-    # suite.addTest(StockManagement("test_edit_stock"))
+    suite.addTest(StockManagement("test_view_stock"))
+    suite.addTest(StockManagement("test_add_stock"))
+    suite.addTest(StockManagement("test_edit_stock"))
     suite.addTest(StockManagement("test_delete_stock"))
-    # suite.addTest(StockManagement("test_view_stock_recommendation"))
+    suite.addTest(StockManagement("test_view_stock_recommendation"))
 
     # suite.addTest(SiteRadarStockManagement(
     #     "test_view_site_stock"))

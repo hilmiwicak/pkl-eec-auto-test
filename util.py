@@ -54,6 +54,9 @@ def random_valid_tgl_masuk_and_expired():
     year_expired, month_expired, day_expired = 0, 0, 0
     year_masuk, month_masuk, day_masuk = random_tgl_masuk()
 
+    month_masuk = str(month_masuk).zfill(2)
+    day_masuk = str(day_masuk).zfill(2)
+
     year_expired = randint(year_masuk, 2024)
     month_expired = randint(1, 12)
     day_expired = random_day(month_expired, year_expired)
@@ -68,7 +71,10 @@ def random_invalid_tgl_masuk_and_expired():
     year_expired, month_expired, day_expired = 0, 0, 0
     year_masuk, month_masuk, day_masuk = random_tgl_masuk()
 
-    year_expired = randint(year_masuk - 10, year_masuk)
+    month_masuk = str(month_masuk).zfill(2)
+    day_masuk = str(day_masuk).zfill(2)
+
+    year_expired = randint(year_masuk - 10, year_masuk - 1)
     month_expired = randint(1, 12)
     day_expired = random_day(month_expired, year_expired)
 
@@ -77,3 +83,7 @@ def random_invalid_tgl_masuk_and_expired():
     day_expired = str(day_expired).zfill(2)
 
     return f"{month_masuk}{day_masuk}{year_masuk}", f"{month_expired}{day_expired}{year_expired}"
+
+if __name__ == "__main__":
+    print(random_valid_tgl_masuk_and_expired())
+    print(random_invalid_tgl_masuk_and_expired())

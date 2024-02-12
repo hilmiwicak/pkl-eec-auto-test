@@ -18,3 +18,6 @@ SITE_IMAGE_PATH = r"C:\Users\Hilmi\dev-projects\skripsi-selenium\skripsi-src\res
 SITE_VIDEO_PATH = r"C:\Users\Hilmi\dev-projects\skripsi-selenium\skripsi-src\resources\video.mp4"
 SITE_LOCATION = "Test Location"
 SITE_NAME = "Test Site Name"
+
+STOCK_NAME_0 = "Test 0"
+STOCK_NAME_3 = "Test 3"
