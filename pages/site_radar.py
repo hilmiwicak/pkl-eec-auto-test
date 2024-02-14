@@ -10,7 +10,7 @@ class SiteRadarPage(BasePage):
             self.constant.BASE_URL + "/site']"
         ).click()
 
-    def add_site(self, radar_name, site_id, image_path):
+    def add_site(self, radar_name, site_id, stock, image_path):
         super().open_home()
         self.driver.find_element(
             self.By.CSS_SELECTOR, "a.nav-link[href='" +
@@ -25,11 +25,16 @@ class SiteRadarPage(BasePage):
         if image_path != "":
             self.driver.find_element(self.By.ID, "image").send_keys(image_path)
 
-        # selects stock with index 1 (random)
-        stock_site_element = self.driver.find_element(
-            self.By.CSS_SELECTOR, "select.form-control.site")
-        stock_site_select = self.Select(stock_site_element)
-        stock_site_select.select_by_index(1)
+        if type(stock) == int or type(stock) == str:
+
+            if type(stock) == int:
+                stock_site_element = self.driver.find_element(
+                    self.By.CSS_SELECTOR, "select.form-control.site")
+                stock_site_select = self.Select(stock_site_element)
+                stock_site_select.select_by_index(stock)
+            elif stock == "delete":
+                self.driver.find_element(
+                    self.By.CSS_SELECTOR, "div#products_table div div a.d-inline.mt-4.ml-1").click()
 
         super().click_submit_button_primary()
         self.driver.switch_to.alert.accept()
@@ -67,6 +72,16 @@ class SiteRadarPage(BasePage):
             message_el = self.driver.find_element(
                 self.By.XPATH,
                 "//input[contains(@name, 'station_id')]/..//div[@class='invalid-feedback']"
+            )
+            return message_el.text
+        except self.NoSuchElementException:
+            return ""
+
+    def get_message_stock_error(self):
+        try:
+            message_el = self.driver.find_element(
+                self.By.XPATH,
+                "//select[contains(@class, 'site')]/../label[contains(@class, 'force-has-danger')]"
             )
             return message_el.text
         except self.NoSuchElementException:

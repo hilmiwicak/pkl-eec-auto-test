@@ -283,32 +283,63 @@ class SiteRadarManagement(BaseTest):
         site_radar_page = SiteRadarPage(self.driver)
 
         # ERROR
-        with self.subTest("1. radar name not regular string, site id not regular string, image not image"):
+        with self.subTest("1. radar name not regular string, site location not regular string, image not image, stock select on but not selecting"):
             site_radar_page.add_site(
-                "⽗⾇!-?2", "⽗⾇!-?2", constant.SITE_VIDEO_PATH)
+                "⽗⾇!-?2", "⽗⾇!-?2", "", constant.SITE_VIDEO_PATH)
 
             message_radar_name = site_radar_page.get_message_radar_name_error()
             message_station_id = site_radar_page.get_message_station_id_error()
+            message_stock = site_radar_page.get_message_stock_error()
             message_image = site_radar_page.get_message_image_error()
             self.assertEqual(message_radar_name, "")
             self.assertEqual(message_station_id, "")
+            self.assertEqual(message_stock, "This field is required")
             self.assertEqual(message_image, "The image must be an image.")
 
-        with self.subTest("2. empty"):
-            site_radar_page.add_site("", "", "")
+        # ERROR
+        with self.subTest("2. empty inputs, not selecting stocks"):
+            site_radar_page.add_site("", "", "delete", "")
 
             message_radar_name = site_radar_page.get_message_radar_name_error()
             message_station_id = site_radar_page.get_message_station_id_error()
+            message_stock = site_radar_page.get_message_stock_error()
             message_image = site_radar_page.get_message_image_error()
             self.assertEqual(message_radar_name,
                              "The radar name field is required.")
             self.assertEqual(message_station_id,
                              "The station id field is required.")
+            self.assertEqual(message_stock, "This field is required")
             self.assertEqual(message_image, "")
 
-        with self.subTest("3. correct inputs"):
+        with self.subTest("3. correct input stock select on but not selecting"):
             site_radar_page.add_site(
-                constant.SITE_NAME, constant.SITE_LOCATION, constant.SITE_IMAGE_PATH)
+                constant.SITE_NAME, constant.SITE_LOCATION, "", constant.SITE_IMAGE_PATH)
+
+            message_radar_name = site_radar_page.get_message_radar_name_error()
+            message_station_id = site_radar_page.get_message_station_id_error()
+            message_stock = site_radar_page.get_message_stock_error()
+            message_image = site_radar_page.get_message_image_error()
+            self.assertEqual(message_radar_name, "")
+            self.assertEqual(message_station_id, "")
+            self.assertEqual(message_stock, "This field is required")
+            self.assertEqual(message_image, "")
+
+        with self.subTest("4. correct inputs, stock not selecting"):
+            site_radar_page.add_site(
+                constant.SITE_NAME, constant.SITE_LOCATION, "delete", constant.SITE_IMAGE_PATH)
+
+            message_radar_name = site_radar_page.get_message_radar_name_error()
+            message_station_id = site_radar_page.get_message_station_id_error()
+            message_stock = site_radar_page.get_message_stock_error()
+            message_image = site_radar_page.get_message_image_error()
+            self.assertEqual(message_radar_name, "")
+            self.assertEqual(message_station_id, "")
+            self.assertEqual(message_stock, "This field is required")
+            self.assertEqual(message_image, "")
+
+        with self.subTest("5. correct inputs with some stock"):
+            site_radar_page.add_site(
+                constant.SITE_NAME, constant.SITE_LOCATION, 1, constant.SITE_IMAGE_PATH)
 
             message = site_radar_page.get_message()
             self.assertEqual(message, "Data Created!")
@@ -317,7 +348,7 @@ class SiteRadarManagement(BaseTest):
         # adds one more site for test_delete_site and SiteRadarStockManagement
         with self.subTest():
             site_radar_page.add_site(
-                constant.SITE_NAME, constant.SITE_LOCATION, constant.SITE_IMAGE_PATH)
+                constant.SITE_NAME, constant.SITE_LOCATION, 1, constant.SITE_IMAGE_PATH)
 
             message = site_radar_page.get_message()
             self.assertEqual(message, "Data Created!")
@@ -732,7 +763,7 @@ def suite():
     # suite.addTest(ExpertManagement("test_delete_expert"))
 
     # suite.addTest(SiteRadarManagement("test_view_site"))
-    # suite.addTest(SiteRadarManagement("test_add_site"))
+    suite.addTest(SiteRadarManagement("test_add_site"))
     # suite.addTest(SiteRadarManagement("test_delete_site"))
 
     # suite.addTest(DistributionManagement("test_view_distribution"))
@@ -741,11 +772,11 @@ def suite():
     # suite.addTest(DistributionManagement(
     #     "test_delete_distribution"))
 
-    suite.addTest(StockManagement("test_view_stock"))
-    suite.addTest(StockManagement("test_add_stock"))
-    suite.addTest(StockManagement("test_edit_stock"))
-    suite.addTest(StockManagement("test_delete_stock"))
-    suite.addTest(StockManagement("test_view_stock_recommendation"))
+    # suite.addTest(StockManagement("test_view_stock"))
+    # suite.addTest(StockManagement("test_add_stock"))
+    # suite.addTest(StockManagement("test_edit_stock"))
+    # suite.addTest(StockManagement("test_delete_stock"))
+    # suite.addTest(StockManagement("test_view_stock_recommendation"))
 
     # suite.addTest(SiteRadarStockManagement(
     #     "test_view_site_stock"))
