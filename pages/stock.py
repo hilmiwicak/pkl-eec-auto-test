@@ -10,20 +10,6 @@ class StockPage(BasePage):
             self.constant.BASE_URL + "/stocks']"
         ).click()
 
-    def add_stock_test(self):
-        super().open_home()
-        self.driver.find_element(
-            self.By.CSS_SELECTOR, "a.nav-link[href='" +
-            self.constant.BASE_URL + "/stocks']"
-        ).click()
-
-        self.driver.find_element(
-            self.By.CSS_SELECTOR,
-            "a.btn-outline-primary[data-original-title='add item']"
-        ).click()
-
-        super().click_submit_button_primary()
-
     def add_stock(self, nama_barang, group, part_number, ref_des, tgl_masuk, expired, kurs_beli, jumlah_unit, status, keterangan):
         super().open_home()
         self.driver.find_element(

@@ -722,18 +722,103 @@ class SiteRadarStockManagement(BaseTest):
 
     def test_add_site_stock(self):
         site_radar_stock_page = SiteRadarStockPage(self.driver)
-        site_radar_stock_page.add_site_stock()
 
-        message = site_radar_stock_page.get_message()
-        self.assertEqual(message, "Data Created!")
+        with self.subTest("1. stock with unit 0 should not be added"):
+            site_radar_stock_page.add_site_stock(constant.STOCK_NAME_0)
+
+            stocks = site_radar_stock_page.get_all_stocks()
+            self.assertNotIn(constant.STOCK_NAME_0, stocks)
+
+        # dependent of add_stock
+        with self.subTest("2. constant.STOCK_NAME_3 harusnya cuma bisa jadi input 3 kali"):
+            site_radar_stock_page.add_site_stock(constant.STOCK_NAME_3)
+
+            message = site_radar_stock_page.get_message_add_site_stock_error()
+            self.assertEqual(message, "The stock has already been taken")
+
+        with self.subTest("3. select on but not selecting"):
+            site_radar_stock_page.add_site_stock("")
+
+            message = site_radar_stock_page.get_message_add_site_stock_error()
+            self.assertEqual(message, "This field is required")
+
+        with self.subTest("4. not selecting stock"):
+            site_radar_stock_page.add_site_stock("delete")
+
+            message = site_radar_stock_page.get_message_add_site_stock_error()
+            self.assertEqual(message, "This field is required")
+
+        with self.subTest("5. valid inputs, random stocks"):
+            site_radar_stock_page.add_site_stock("random")
+
+            message = site_radar_stock_page.get_message()
+            self.assertEqual(message, "Data Created!")
 
     def test_edit_site_stock(self):
         site_radar_stock_page = SiteRadarStockPage(self.driver)
-        site_radar_stock_page.edit_site_stock("Test Sited Stock Name Edit", util.random_part_number(
-        ), util.random_ref_des(), "10162023", "11262023")
 
-        message = site_radar_stock_page.get_message()
-        self.assertEqual(message, "Data Edited!")
+        tgl_masuk_invalid, expired_invalid = util.random_invalid_tgl_masuk_and_expired()
+        tgl_masuk_valid, expired_valid = util.random_valid_tgl_masuk_and_expired()
+
+        with self.subTest():
+            site_radar_stock_page.edit_site_stock(
+                nama_barang="1-?ⴙ⺻✷⤵≣⼺⥊ⅿ⇆⌂⹁⊹⣁ⰴ⻏⥺⪈",
+                group="1-?☉⛓∫ⰶ⦿ⶪ⪧⪪",
+                part_number="PL-3-?ⶪ⪧⪪⼺⥊ⅿ⇆",
+                ref_des="⽗⾇q?ⶪ⪧⪪⼺",
+                tgl_masuk=tgl_masuk_invalid,
+                expired=expired_invalid,
+            )
+
+            message_nama_barang = site_radar_stock_page.get_message_nama_barang_error()
+            message_group = site_radar_stock_page.get_message_group_error()
+            message_part_number = site_radar_stock_page.get_message_part_number_error()
+            message_ref_des = site_radar_stock_page.get_message_ref_des_error()
+            message_tgl_masuk = site_radar_stock_page.get_message_tgl_masuk_error()
+            message_expired_date = site_radar_stock_page.get_message_expired_date_error()
+            self.assertEqual(message_nama_barang, "")
+            self.assertEqual(message_group, "")
+            self.assertEqual(message_part_number, "")
+            self.assertEqual(message_ref_des, "")
+            self.assertEqual(message_tgl_masuk, "")
+            self.assertEqual(
+                message_expired_date, "The expired must be a date after tgl masuk.")
+
+        with self.subTest():
+            site_radar_stock_page.edit_site_stock(
+                nama_barang="",
+                group="",
+                part_number="",
+                ref_des="",
+                tgl_masuk="",
+                expired="",
+            )
+
+            message_nama_barang = site_radar_stock_page.get_message_nama_barang_error()
+            message_group = site_radar_stock_page.get_message_group_error()
+            message_part_number = site_radar_stock_page.get_message_part_number_error()
+            message_ref_des = site_radar_stock_page.get_message_ref_des_error()
+            message_tgl_masuk = site_radar_stock_page.get_message_tgl_masuk_error()
+            message_expired_date = site_radar_stock_page.get_message_expired_date_error()
+            self.assertEqual(message_nama_barang, "The nama barang field is required.")
+            self.assertEqual(message_group, "")
+            self.assertEqual(message_part_number, "The part number field is required.")
+            self.assertEqual(message_ref_des, "The serial number field is required.")
+            self.assertEqual(message_tgl_masuk, "The tgl masuk field is required.")
+            self.assertEqual( message_expired_date, "The expired field is required.")
+
+        with self.subTest():
+            site_radar_stock_page.edit_site_stock(
+                nama_barang="Test Edit Sited Stock Name",
+                group=1,
+                part_number=util.random_part_number(),
+                ref_des=util.random_ref_des(),
+                tgl_masuk=tgl_masuk_valid,
+                expired=expired_valid,
+            )
+
+            message = site_radar_stock_page.get_message()
+            self.assertEqual(message, "Data Edited!")
 
     def test_delete_site_stock(self):
         site_radar_stock_page = SiteRadarStockPage(self.driver)
@@ -763,7 +848,7 @@ def suite():
     # suite.addTest(ExpertManagement("test_delete_expert"))
 
     # suite.addTest(SiteRadarManagement("test_view_site"))
-    suite.addTest(SiteRadarManagement("test_add_site"))
+    # suite.addTest(SiteRadarManagement("test_add_site"))
     # suite.addTest(SiteRadarManagement("test_delete_site"))
 
     # suite.addTest(DistributionManagement("test_view_distribution"))
@@ -778,13 +863,13 @@ def suite():
     # suite.addTest(StockManagement("test_delete_stock"))
     # suite.addTest(StockManagement("test_view_stock_recommendation"))
 
-    # suite.addTest(SiteRadarStockManagement(
-    #     "test_view_site_stock"))
-    # suite.addTest(SiteRadarStockManagement("test_add_site_stock"))
-    # suite.addTest(SiteRadarStockManagement(
-    #     "test_edit_site_stock"))
-    # suite.addTest(SiteRadarStockManagement(
-    #     "test_delete_site_stock"))
+    suite.addTest(SiteRadarStockManagement(
+        "test_view_site_stock"))
+    suite.addTest(SiteRadarStockManagement("test_add_site_stock"))
+    suite.addTest(SiteRadarStockManagement(
+        "test_edit_site_stock"))
+    suite.addTest(SiteRadarStockManagement(
+        "test_delete_site_stock"))
 
     suite.addTest(AuthenticationLogout("test_logout"))
     return suite
