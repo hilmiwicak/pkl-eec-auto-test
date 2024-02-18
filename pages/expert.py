@@ -22,40 +22,74 @@ class ExpertPage(BasePage):
         self.driver.find_element(self.By.ID, "nip").send_keys(nip)
 
         if expert_company is None:
-            self.driver.find_element("eec_expert").click()
+            self.driver.find_element(self.By.ID, "eec_expert").click()
         else:
             self.driver.find_element(
-                "expert_company").send_keys(expert_company)
+                self.By.ID, "expert_company").send_keys(expert_company)
 
         super().click_submit_button_primary()
         self.driver.switch_to.alert.accept()
 
-    def view_expert_detail(self):
+    def edit_expert_view_list(self):
         super().open_home()
         self.driver.find_element(
             self.By.CSS_SELECTOR, "a.nav-link[href='" +
             self.constant.BASE_URL + "/expertManagement']"
         ).click()
-        tr_elements = self.driver.find_elements(self.By.CSS_SELECTOR, "tr")
-        name = tr_elements[0].text
-        nip = tr_elements[1].text
-        expert_company = tr_elements[2].text
+        td_elements = self.driver.find_elements(self.By.CSS_SELECTOR, "tr td")
+        name = td_elements[1].text
+        nip = td_elements[2].text
+        expert_company = td_elements[3].text
         return [name, nip, expert_company]
 
-    def edit_expert_detail(self):
+    def edit_expert_view_detail(self):
         super().open_home()
         self.driver.find_element(
             self.By.CSS_SELECTOR, "a.nav-link[href='" +
             self.constant.BASE_URL + "/expertManagement']"
         ).click()
+
         self.driver.find_element(
             self.By.CSS_SELECTOR, "a.btn.btn-warning").click()
 
-        name = self.driver.find_element(self.By.ID, "name").get_attribute("value")
-        nip = self.driver.find_element(self.By.ID, "nip").get_attribute("value")
-        expert_company = self.driver.find_element(self.By.ID, "expert_company").get_attribute("value")
+        name = self.driver.find_element(
+            self.By.ID, "name").get_attribute("value")
+        nip = self.driver.find_element(
+            self.By.ID, "nip").get_attribute("value")
+        expert_company = self.driver.find_element(
+            self.By.ID, "expert_company").get_attribute("value")
 
         return [name, nip, expert_company]
+
+    def edit_expert(self, name, nip, expert_company=None):
+        super().open_home()
+        self.driver.find_element(
+            self.By.CSS_SELECTOR, "a.nav-link[href='" +
+            self.constant.BASE_URL + "/expertManagement']"
+        ).click()
+
+        self.driver.find_element(
+            self.By.CSS_SELECTOR, "a.btn.btn-warning").click()
+
+        name_el = self.driver.find_element(self.By.ID, "name")
+        name_el.clear()
+        name_el.send_keys(name)
+
+        nip_el = self.driver.find_element(self.By.ID, "nip")
+        nip_el.clear()
+        nip_el.send_keys(nip)
+
+        expert_company_el = self.driver.find_element(self.By.ID, "expert_company")
+        expert_company_el.clear()
+
+        if expert_company is None:
+            self.driver.find_element(self.By.ID, "eec_expert").click()
+        else:
+            self.driver.find_element(
+                self.By.ID, "expert_company").send_keys(expert_company)
+
+        super().click_submit_button_primary()
+        self.driver.switch_to.alert.accept()
 
     def delete_expert(self):
         super().open_home()

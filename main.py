@@ -254,12 +254,95 @@ class ExpertManagement(BaseTest):
     def test_edit_expert(self):
         expert_page = ExpertPage(self.driver)
 
-        name_view, nip_view, company_view = expert_page.view_expert_detail()
-        name_edit, nip_edit, company_edit = expert_page.edit_expert_detail()
+        with self.subTest("1. check whether the data is the same as the one in the view all page"):
+            name_view, nip_view, company_view = expert_page.edit_expert_view_list()
+            name_edit, nip_edit, company_edit = expert_page.edit_expert_view_detail()
 
-        self.assertEqual(name_view, name_edit)
-        self.assertEqual(nip_view, nip_edit)
-        self.assertEqual(company_view, company_edit)
+            self.assertEqual(name_view, name_edit)
+            self.assertEqual(nip_view, nip_edit)
+            self.assertEqual(company_view, company_edit)
+
+        with self.subTest("2. name more than 15, nip less than 11, valid company"):
+            expert_page.edit_expert(
+                "this name is more than 15", util.random_nip_lt_11(), "Test Company")
+
+            message_name = expert_page.get_message_name_error()
+            message_nip = expert_page.get_message_nip_error()
+            message_company = expert_page.get_message_company_error()
+            self.assertEqual(
+                message_name, "The name may not be greater than 15 characters.")
+            self.assertEqual(
+                message_nip, "This input must be 11 or 18 digits.")
+            self.assertEqual(message_company, "")
+
+        with self.subTest("3. name not regular string, nip not integer, expert company not regular string"):
+            expert_page.edit_expert("Björk 东-л", "test 10000.0", "компанија-測試")
+
+            message_name = expert_page.get_message_name_error()
+            message_nip = expert_page.get_message_nip_error()
+            message_company = expert_page.get_message_company_error()
+            self.assertEqual(message_name, "")
+            self.assertEqual(
+                message_nip, "This input must be 11 or 18 digits.")
+            self.assertEqual(message_company, "")
+
+        with self.subTest("4. correct name, nip more than 18 digit, eec expert"):
+            expert_page.edit_expert(constant.EXPERT_NAME,
+                                   util.random_nip_gt_18())
+
+            message_name = expert_page.get_message_name_error()
+            message_nip = expert_page.get_message_nip_error()
+            message_company = expert_page.get_message_company_error()
+            self.assertEqual(message_name, "")
+            self.assertEqual(
+                message_nip, "This input must be 11 or 18 digits.")
+            self.assertEqual(message_company, "")
+
+        # ERROR
+        with self.subTest("5. correct name, correct eec company, nip 18 digit"):
+            expert_page.edit_expert("Test Name", util.random_nip_18())
+
+            message_name = expert_page.get_message_name_error()
+            message_nip = expert_page.get_message_nip_error()
+            message_company = expert_page.get_message_company_error()
+            self.assertEqual(message_name, "")
+            self.assertEqual(message_nip, "EEC Expert must have 11 digits.")
+            self.assertEqual(message_company, "")
+
+        with self.subTest("6. empty"):
+            expert_page.edit_expert("", "", "")
+
+            message_name = expert_page.get_message_name_error()
+            message_nip = expert_page.get_message_nip_error()
+            message_company = expert_page.get_message_company_error()
+            self.assertEqual(message_name, "The name field is required.")
+            self.assertEqual(message_nip, "The nip field is required.")
+            self.assertEqual(
+                message_company, "The expert company field is required.")
+
+        with self.subTest("7. correct inputs, not eec expert"):
+            expert_page.edit_expert(
+                "Test Not EEC", util.random_nip_18(), "Test Company")
+
+            message = expert_page.get_message()
+            self.assertEqual(message, "Data Created!")
+
+        with self.subTest("8. correct inputs, eec expert"):
+            expert_page.edit_expert(constant.EXPERT_NAME, constant.EXPERT_NIP)
+
+            message = expert_page.get_message()
+            self.assertEqual(message, "Data Created!")
+
+        # ERROR
+        with self.subTest("9. same name, same nip, eec expert"):
+            expert_page.edit_expert(constant.EXPERT_NAME, constant.EXPERT_NIP)
+
+            message_name = expert_page.get_message_name_error()
+            message_nip = expert_page.get_message_nip_error()
+            message_company = expert_page.get_message_company_error()
+            self.assertEqual(message_name, "")
+            self.assertEqual(message_nip, "The nip has already been taken.")
+            self.assertEqual(message_company, "")
 
     def test_delete_expert(self):
         expert_page = ExpertPage(self.driver)
@@ -842,10 +925,10 @@ def suite():
     # suite.addTest(MaintenanceManagement("test_view_detail_pm"))
     # suite.addTest(MaintenanceManagement("test_view_detail_cm"))
 
-    # suite.addTest(ExpertManagement("test_view_expert"))
-    # suite.addTest(ExpertManagement("test_add_expert"))
-    # suite.addTest(ExpertManagement("test_edit_expert"))
-    # suite.addTest(ExpertManagement("test_delete_expert"))
+    suite.addTest(ExpertManagement("test_view_expert"))
+    suite.addTest(ExpertManagement("test_add_expert"))
+    suite.addTest(ExpertManagement("test_edit_expert"))
+    suite.addTest(ExpertManagement("test_delete_expert"))
 
     # suite.addTest(SiteRadarManagement("test_view_site"))
     # suite.addTest(SiteRadarManagement("test_add_site"))
@@ -863,13 +946,13 @@ def suite():
     # suite.addTest(StockManagement("test_delete_stock"))
     # suite.addTest(StockManagement("test_view_stock_recommendation"))
 
-    suite.addTest(SiteRadarStockManagement(
-        "test_view_site_stock"))
-    suite.addTest(SiteRadarStockManagement("test_add_site_stock"))
-    suite.addTest(SiteRadarStockManagement(
-        "test_edit_site_stock"))
-    suite.addTest(SiteRadarStockManagement(
-        "test_delete_site_stock"))
+    # suite.addTest(SiteRadarStockManagement(
+    #     "test_view_site_stock"))
+    # suite.addTest(SiteRadarStockManagement("test_add_site_stock"))
+    # suite.addTest(SiteRadarStockManagement(
+    #     "test_edit_site_stock"))
+    # suite.addTest(SiteRadarStockManagement(
+    #     "test_delete_site_stock"))
 
     suite.addTest(AuthenticationLogout("test_logout"))
     return suite
