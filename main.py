@@ -98,6 +98,7 @@ class PasswordEdit(BaseTest):
             message = profile_page.get_message()
             self.assertEqual(message, "Password has succesfully changed!")
 
+        # supposed to be outside skripsi but it seems to be an error
         # ERROR
         with self.subTest("6. current password not regular string"):
             profile_page.edit_password(
@@ -450,16 +451,23 @@ class DistributionManagement(BaseTest):
     def test_view_distribution(self):
         distribution_page = DistributionPage(self.driver)
 
-        radar_name_view = distribution_page.view_distribution_list_radar_name()
-        radar_name_detail = distribution_page.view_distribution_detail_radar_name()
+        with self.subTest("1. checking whether the distribution table is showing"):
+            distribution_page.view_distribution_detail()
 
-        self.assertEqual(radar_name_view, radar_name_detail)
+            table_empty = distribution_page.get_data_table_empty()
+            self.assertEqual(table_empty, "")
+
+        with self.subTest("2. checking whether the list of radar is the same in distribution"):
+            radar_name_view = distribution_page.view_distribution_list_radar_name()
+            radar_name_detail = distribution_page.view_distribution_detail_radar_name()
+
+            self.assertEqual(radar_name_view, radar_name_detail)
 
     # dependent of add_expert for subtest 2
     def test_add_distribution(self):
         distribution_page = DistributionPage(self.driver)
 
-        with self.subTest("1. checking wheter the name in the view is not on the add form"):
+        with self.subTest("1. checking whether the name in the view is not on the add form"):
             name_from_view, name_list_from_select_add = distribution_page.add_distribution_detail()
 
             self.assertNotIn(name_from_view, name_list_from_select_add)
@@ -925,13 +933,13 @@ def suite():
     # suite.addTest(MaintenanceManagement("test_view_detail_pm"))
     # suite.addTest(MaintenanceManagement("test_view_detail_cm"))
 
-    suite.addTest(ExpertManagement("test_view_expert"))
-    suite.addTest(ExpertManagement("test_add_expert"))
-    suite.addTest(ExpertManagement("test_edit_expert"))
-    suite.addTest(ExpertManagement("test_delete_expert"))
+    # suite.addTest(ExpertManagement("test_view_expert"))
+    # suite.addTest(ExpertManagement("test_add_expert"))
+    # suite.addTest(ExpertManagement("test_edit_expert"))
+    # suite.addTest(ExpertManagement("test_delete_expert"))
 
     # suite.addTest(SiteRadarManagement("test_view_site"))
-    # suite.addTest(SiteRadarManagement("test_add_site"))
+    suite.addTest(SiteRadarManagement("test_add_site"))
     # suite.addTest(SiteRadarManagement("test_delete_site"))
 
     # suite.addTest(DistributionManagement("test_view_distribution"))

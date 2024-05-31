@@ -27,6 +27,15 @@ class DistributionPage(BasePage):
         radar_name = radar_name.removeprefix("Expert Distribution of ")
         return radar_name
 
+    def view_distribution_detail(self):
+        super().open_home()
+        self.driver.find_element(
+            self.By.CSS_SELECTOR, "a.nav-link[href='" +
+            self.constant.BASE_URL + "/distribution']"
+        ).click()
+        self.driver.find_element(
+            self.By.CSS_SELECTOR, "a.btn.btn-info").click()
+
     def add_distribution_detail(self):
         super().open_home()
         self.driver.find_element(
