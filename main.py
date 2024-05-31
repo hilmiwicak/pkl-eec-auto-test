@@ -946,7 +946,7 @@ def suite():
     # suite.addTest(ExpertManagement("test_delete_expert"))
 
     # suite.addTest(SiteRadarManagement("test_view_site"))
-    suite.addTest(SiteRadarManagement("test_add_site"))
+    # suite.addTest(SiteRadarManagement("test_add_site"))
     # suite.addTest(SiteRadarManagement("test_delete_site"))
 
     # suite.addTest(DistributionManagement("test_view_distribution"))
@@ -961,8 +961,8 @@ def suite():
     # suite.addTest(StockManagement("test_delete_stock"))
     # suite.addTest(StockManagement("test_view_stock_recommendation"))
 
-    # suite.addTest(SiteRadarStockManagement(
-    #     "test_view_site_stock"))
+    suite.addTest(SiteRadarStockManagement(
+        "test_view_site_stock"))
     # suite.addTest(SiteRadarStockManagement("test_add_site_stock"))
     # suite.addTest(SiteRadarStockManagement(
     #     "test_edit_site_stock"))

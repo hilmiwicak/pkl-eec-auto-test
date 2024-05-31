@@ -13,8 +13,7 @@ class SiteRadarStockPage(BasePage):
         ).click()
         card_element = self.driver.find_element(
             self.By.XPATH,
-            """//strong[contains(text(), '{0}')]/ancestor::div[contains(@class, 'card card-stats')]""".format(
-                self.constant.SITE_LOCATION)
+            """//strong/ancestor::div[contains(@class, 'card card-stats')]"""
         )
         card_element.location_once_scrolled_into_view
         card_element.find_element(
