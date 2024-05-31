@@ -22,19 +22,24 @@ class SiteRadarPage(BasePage):
         self.driver.find_element(
             self.By.ID, "radar_name").send_keys(radar_name)
         self.driver.find_element(self.By.ID, "station_id").send_keys(site_id)
+
         if image_path != "":
             self.driver.find_element(self.By.ID, "image").send_keys(image_path)
 
-        if type(stock) == int or type(stock) == str:
-
-            if type(stock) == int:
+        if type(stock) == int:
+            for i in range(1, stock+1):
                 stock_site_element = self.driver.find_element(
-                    self.By.CSS_SELECTOR, "select.form-control.site")
+                    self.By.CSS_SELECTOR, "select[name='stocks[" + str(i-1) + "][stock_id]']")
                 stock_site_select = self.Select(stock_site_element)
-                stock_site_select.select_by_index(stock)
-            elif stock == "delete":
-                self.driver.find_element(
-                    self.By.CSS_SELECTOR, "div#products_table div div a.d-inline.mt-4.ml-1").click()
+                stock_site_select.select_by_index(i)
+
+                if i != stock:
+                    self.driver.find_element(
+                        self.By.CSS_SELECTOR, "button.btn-sm.btn-secondary").click()
+
+        elif stock == "delete":
+            self.driver.find_element(
+                self.By.CSS_SELECTOR, "div#products_table div div a.d-inline.mt-4.ml-1").click()
 
         super().click_submit_button_primary()
         self.driver.switch_to.alert.accept()

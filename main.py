@@ -428,6 +428,13 @@ class SiteRadarManagement(BaseTest):
             message = site_radar_page.get_message()
             self.assertEqual(message, "Data Created!")
 
+        with self.subTest("6. correct inputs with 3 stocks"):
+            site_radar_page.add_site(
+                constant.SITE_NAME, constant.SITE_LOCATION, 3, constant.SITE_IMAGE_PATH)
+
+            message = site_radar_page.get_message()
+            self.assertEqual(message, "Data Created!")
+
         # outside skripsi
         # adds one more site for test_delete_site and SiteRadarStockManagement
         with self.subTest():
