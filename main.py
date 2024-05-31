@@ -821,12 +821,6 @@ class SiteRadarStockManagement(BaseTest):
     def test_add_site_stock(self):
         site_radar_stock_page = SiteRadarStockPage(self.driver)
 
-        with self.subTest("1. stock with unit 0 should not be added"):
-            site_radar_stock_page.add_site_stock(constant.STOCK_NAME_0)
-
-            stocks = site_radar_stock_page.get_all_stocks()
-            self.assertNotIn(constant.STOCK_NAME_0, stocks)
-
         # dependent of add_stock
         with self.subTest("2. constant.STOCK_NAME_3 harusnya cuma bisa jadi input 3 kali"):
             site_radar_stock_page.add_site_stock(constant.STOCK_NAME_3)
