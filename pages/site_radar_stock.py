@@ -28,8 +28,7 @@ class SiteRadarStockPage(BasePage):
 
         card_element = self.driver.find_element(
             self.By.XPATH,
-            """//strong[contains(text(), '{0}')]/ancestor::div[contains(@class, 'card card-stats')]""".format(
-                self.constant.SITE_LOCATION)
+            """//strong/ancestor::div[contains(@class, 'card card-stats')]"""
         )
         card_element.location_once_scrolled_into_view
         card_element.find_element(
@@ -38,29 +37,20 @@ class SiteRadarStockPage(BasePage):
         self.driver.find_element(
             self.By.CSS_SELECTOR, "a.btn-outline-primary.text-right").click()
 
-        if stock == "delete":
+        if type(stock) == int:
+            for i in range(1, stock+1):
+                stock_site_element = self.driver.find_element(
+                    self.By.CSS_SELECTOR, "select[name='stocks[" + str(i-1) + "][stock_id]']")
+                stock_site_select = self.Select(stock_site_element)
+                stock_site_select.select_by_index(i)
+
+                if i != stock:
+                    self.driver.find_element(
+                        self.By.CSS_SELECTOR, "button.btn-sm.btn-secondary").click()
+
+        elif stock == "delete":
             self.driver.find_element(
                 self.By.CSS_SELECTOR, "div#products_table div div a.d-inline.mt-4.ml-1").click()
-        elif stock == "random":
-            for i in range(4):
-                stock_sel_element = self.driver.find_element(
-                    self.By.CSS_SELECTOR, "select[name='stocks[" + str(i) + "][stock_id]']")
-                stock_sel = self.Select(stock_sel_element)
-                stock_sel.select_by_index(i+1)
-                self.driver.find_element(
-                    self.By.CSS_SELECTOR, "button.btn-secondary").click()
-        elif stock == self.constant.STOCK_NAME_3:
-            for i in range(3):
-                stock_sel_element = self.driver.find_element(
-                    self.By.CSS_SELECTOR, "select[name='stocks[" + str(i) + "][stock_id]']")
-                stock_sel = self.Select(stock_sel_element)
-                stock_sel.select_by_visible_text(self.constant.STOCK_NAME_3)
-                self.driver.find_element(
-                    self.By.CSS_SELECTOR, "button.btn-secondary").click()
-
-        if stock != self.constant.STOCK_NAME_0:
-            super().click_submit_button_primary()
-
 
     def edit_site_stock(self, nama_barang, group, part_number, ref_des, tgl_masuk, expired):
         super().open_home()
@@ -158,15 +148,6 @@ class SiteRadarStockPage(BasePage):
             self.By.CSS_SELECTOR, "button.btn-danger").click()
 
         self.driver.switch_to.alert.accept()
-
-    def get_all_stocks(self):
-        try:
-            stocks_el = self.driver.find_element(
-                self.By.CSS_SELECTOR, ".form-control.site")
-            stocks_sel = self.Select(stocks_el)
-            return stocks_sel.options
-        except self.NoSuchElementException:
-            return []
 
     def get_message_add_site_stock_error(self):
         try:
