@@ -52,6 +52,61 @@ class SiteRadarStockPage(BasePage):
             self.driver.find_element(
                 self.By.CSS_SELECTOR, "div#products_table div div a.d-inline.mt-4.ml-1").click()
 
+    def edit_site_radar_stock_view_list(self):
+        super().open_home()
+        self.driver.find_element(
+            self.By.CSS_SELECTOR, "a.nav-link[href='" +
+            self.constant.BASE_URL + "/site']"
+        ).click()
+
+        card_element = self.driver.find_element(
+            self.By.XPATH,
+            """//strong/ancestor::div[contains(@class, 'card card-stats')]"""
+        )
+        card_element.location_once_scrolled_into_view
+        card_element.find_element(
+            self.By.CSS_SELECTOR, "a.btn-info").click()
+
+        td_elements = self.driver.find_elements(self.By.CSS_SELECTOR, "tr td")
+        nama_barang = td_elements[1].text
+        part_number = td_elements[2].text
+        ref_des = td_elements[3].text
+        tgl_masuk = td_elements[4].text
+        expired = td_elements[5].text
+
+        return [nama_barang, part_number, ref_des, tgl_masuk, expired]
+
+    def edit_site_radar_stock_view_detail(self):
+        super().open_home()
+        self.driver.find_element(
+            self.By.CSS_SELECTOR, "a.nav-link[href='" +
+            self.constant.BASE_URL + "/site']"
+        ).click()
+
+        card_element = self.driver.find_element(
+            self.By.XPATH,
+            """//strong/ancestor::div[contains(@class, 'card card-stats')]"""
+        )
+        card_element.location_once_scrolled_into_view
+        card_element.find_element(
+            self.By.CSS_SELECTOR, "a.btn-info").click()
+
+        self.driver.find_element(
+            self.By.CSS_SELECTOR, "a.btn-warning").click()
+
+        nama_barang = self.driver.find_element(
+            self.By.ID, "nama_barang").get_attribute("value")
+        part_number = self.driver.find_element(
+            self.By.ID, "part_number").get_attribute("value")
+        ref_des = self.driver.find_element(
+            self.By.ID, "serial_number").get_attribute("value")
+        tgl_masuk = self.driver.find_element(
+            self.By.ID, "tgl_masuk").get_attribute("value")
+        expired = self.driver.find_element(
+            self.By.ID, "expired").get_attribute("value")
+
+        return [nama_barang, part_number, ref_des, tgl_masuk, expired]
+
     def edit_site_stock(self, nama_barang, group, part_number, ref_des, tgl_masuk, expired):
         super().open_home()
         self.driver.find_element(
@@ -61,8 +116,7 @@ class SiteRadarStockPage(BasePage):
 
         card_element = self.driver.find_element(
             self.By.XPATH,
-            """//strong[contains(text(), '{0}')]/ancestor::div[contains(@class, 'card card-stats')]""".format(
-                self.constant.SITE_LOCATION)
+            """//strong/ancestor::div[contains(@class, 'card card-stats')]"""
         )
         card_element.location_once_scrolled_into_view
         card_element.find_element(
@@ -137,8 +191,7 @@ class SiteRadarStockPage(BasePage):
 
         card_element = self.driver.find_element(
             self.By.XPATH,
-            """//strong[contains(text(), '{0}')]/ancestor::div[contains(@class, 'card card-stats')]""".format(
-                self.constant.SITE_LOCATION)
+            """//strong/ancestor::div[contains(@class, 'card card-stats')]"""
         )
         card_element.location_once_scrolled_into_view
         card_element.find_element(

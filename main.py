@@ -815,7 +815,17 @@ class SiteRadarStockManagement(BaseTest):
         tgl_masuk_invalid, expired_invalid = util.random_invalid_tgl_masuk_and_expired()
         tgl_masuk_valid, expired_valid = util.random_valid_tgl_masuk_and_expired()
 
-        with self.subTest("1. not regular chars nama barang, not regular character group, not regular character part number, not regular character ref des, EXPIRED DATE < TGL MASUK, JUMLAH UNIT NOT INTEGER"):
+        with self.subTest("1. check whether the data is the same as the one in the view all page"):
+            nama_barang_view, part_number_view, ref_des_view, tgl_masuk_view, expired_view = site_radar_stock_page.edit_site_radar_stock_view_list()
+            nama_barang_detail, part_number_detail, ref_des_detail, tgl_masuk_detail, expired_detail = site_radar_stock_page.edit_site_radar_stock_view_detail()
+
+            self.assertEqual(nama_barang_view, nama_barang_detail)
+            self.assertEqual(part_number_view, part_number_detail)
+            self.assertEqual(ref_des_view, ref_des_detail)
+            self.assertEqual(tgl_masuk_view, tgl_masuk_detail)
+            self.assertEqual(expired_view, expired_detail)
+
+        with self.subTest("2. not regular chars nama barang, not regular character group, not regular character part number, not regular character ref des, EXPIRED DATE < TGL MASUK, JUMLAH UNIT NOT INTEGER"):
             site_radar_stock_page.edit_site_stock(
                 nama_barang="1-?ⴙ⺻✷⤵≣⼺⥊ⅿ⇆⌂⹁⊹⣁ⰴ⻏⥺⪈",
                 group="1-?☉⛓∫ⰶ⦿ⶪ⪧⪪",
@@ -839,7 +849,7 @@ class SiteRadarStockManagement(BaseTest):
             self.assertEqual(
                 message_expired_date, "The expired must be a date after tgl masuk.")
 
-        with self.subTest("2. empty input"):
+        with self.subTest("3. empty input"):
             site_radar_stock_page.edit_site_stock(
                 nama_barang="",
                 group="",
@@ -862,7 +872,7 @@ class SiteRadarStockManagement(BaseTest):
             self.assertEqual(message_tgl_masuk, "The tgl masuk field is required.")
             self.assertEqual( message_expired_date, "The expired field is required.")
 
-        with self.subTest("3. all valid input"):
+        with self.subTest("4. all valid input"):
             site_radar_stock_page.edit_site_stock(
                 nama_barang="Test Edit Sited Stock Name",
                 group=1,
@@ -918,11 +928,11 @@ def suite():
     # suite.addTest(StockManagement("test_delete_stock"))
     # suite.addTest(StockManagement("test_view_stock_recommendation"))
 
-    suite.addTest(SiteRadarStockManagement(
-        "test_view_site_stock"))
-    # suite.addTest(SiteRadarStockManagement("test_add_site_stock"))
     # suite.addTest(SiteRadarStockManagement(
-    #     "test_edit_site_stock"))
+    #     "test_view_site_stock"))
+    # suite.addTest(SiteRadarStockManagement("test_add_site_stock"))
+    suite.addTest(SiteRadarStockManagement(
+        "test_edit_site_stock"))
     # suite.addTest(SiteRadarStockManagement(
     #     "test_delete_site_stock"))
 
