@@ -1,3 +1,4 @@
+from selenium.common.exceptions import NoSuchElementException
 from pages.base_page import BasePage
 
 
@@ -23,7 +24,22 @@ class ProfilePage(BasePage):
         super().click_submit_button_primary()
 
     def get_message_current_password_error(self):
-        return self.driver.find_element("name-error").text
+        try:
+            message_el = self.driver.find_element(
+                self.By.ID, "name-error"
+            )
+            message_el.location_once_scrolled_into_view
+            return message_el.text
+        except self.NoSuchElementException:
+            return ""
+
 
     def get_message_new_password_error(self):
-        return self.driver.find_element("password-error").text
+        try:
+            message_el = self.driver.find_element(
+                self.By.ID, "password-error"
+            )
+            message_el.location_once_scrolled_into_view
+            return message_el.text
+        except self.NoSuchElementException:
+            return ""

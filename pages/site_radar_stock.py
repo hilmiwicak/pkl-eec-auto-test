@@ -52,6 +52,8 @@ class SiteRadarStockPage(BasePage):
             self.driver.find_element(
                 self.By.CSS_SELECTOR, "div#products_table div div a.d-inline.mt-4.ml-1").click()
 
+        super().click_submit_button_primary()
+
     def edit_site_radar_stock_view_list(self):
         super().open_home()
         self.driver.find_element(

@@ -87,7 +87,9 @@ class PasswordEdit(BaseTest):
             profile_page.edit_password(
                 constant.PASSWORD, constant.PASSWORD, constant.PASSWORD)
 
+            message_current = profile_page.get_message_current_password_error()
             message_new = profile_page.get_message_new_password_error()
+            self.assertEqual(message_current, "")
             self.assertEqual(
                 message_new, "The password and current password must be different.")
 
@@ -326,13 +328,13 @@ class ExpertManagement(BaseTest):
                 "Test Not EEC", util.random_nip_18(), "Test Company")
 
             message = expert_page.get_message()
-            self.assertEqual(message, "Data Created!")
+            self.assertEqual(message, "Data Updated!")
 
         with self.subTest("8. correct inputs, eec expert"):
             expert_page.edit_expert(constant.EXPERT_NAME, constant.EXPERT_NIP)
 
             message = expert_page.get_message()
-            self.assertEqual(message, "Data Created!")
+            self.assertEqual(message, "Data Updated!")
 
         # ERROR
         with self.subTest("9. same name, same nip, eec expert"):
@@ -435,16 +437,6 @@ class SiteRadarManagement(BaseTest):
             message = site_radar_page.get_message()
             self.assertEqual(message, "Data Created!")
 
-        # outside skripsi
-        # adds one more site for test_delete_site and SiteRadarStockManagement
-        with self.subTest():
-            site_radar_page.add_site(
-                constant.SITE_NAME, constant.SITE_LOCATION, 1, constant.SITE_IMAGE_PATH)
-
-            message = site_radar_page.get_message()
-            self.assertEqual(message, "Data Created!")
-
-    # dependent of add_site
     def test_delete_site(self):
         site_radar_page = SiteRadarPage(self.driver)
         site_radar_page.delete_site()
@@ -470,7 +462,6 @@ class DistributionManagement(BaseTest):
 
             self.assertEqual(radar_name_view, radar_name_detail)
 
-    # dependent of add_expert for subtest 2
     def test_add_distribution(self):
         distribution_page = DistributionPage(self.driver)
 
@@ -489,14 +480,6 @@ class DistributionManagement(BaseTest):
                              "The expert id field is required.")
 
         with self.subTest("3. correct inputs"):
-            distribution_page.add_distribution(1, 1)
-
-            message = distribution_page.get_message()
-            self.assertEqual(message, "Data Created!")
-
-        # outside skripsi
-        # adds one more random expert distribution for test_delete_distribution and test_edit_distribution
-        with self.subTest():
             distribution_page.add_distribution(1, 1)
 
             message = distribution_page.get_message()
@@ -815,6 +798,7 @@ class SiteRadarStockManagement(BaseTest):
         tgl_masuk_invalid, expired_invalid = util.random_invalid_tgl_masuk_and_expired()
         tgl_masuk_valid, expired_valid = util.random_valid_tgl_masuk_and_expired()
 
+        # SOMETIMES ERROR
         with self.subTest("1. check whether the data is the same as the one in the view all page"):
             nama_barang_view, part_number_view, ref_des_view, tgl_masuk_view, expired_view = site_radar_stock_page.edit_site_radar_stock_view_list()
             nama_barang_detail, part_number_detail, ref_des_detail, tgl_masuk_detail, expired_detail = site_radar_stock_page.edit_site_radar_stock_view_detail()
@@ -913,7 +897,7 @@ def suite():
     # suite.addTest(ExpertManagement("test_delete_expert"))
 
     # suite.addTest(SiteRadarManagement("test_view_site"))
-    # suite.addTest(SiteRadarManagement("test_add_site"))
+    suite.addTest(SiteRadarManagement("test_add_site"))
     # suite.addTest(SiteRadarManagement("test_delete_site"))
 
     # suite.addTest(DistributionManagement("test_view_distribution"))
@@ -931,8 +915,8 @@ def suite():
     # suite.addTest(SiteRadarStockManagement(
     #     "test_view_site_stock"))
     # suite.addTest(SiteRadarStockManagement("test_add_site_stock"))
-    suite.addTest(SiteRadarStockManagement(
-        "test_edit_site_stock"))
+    # suite.addTest(SiteRadarStockManagement(
+    #     "test_edit_site_stock"))
     # suite.addTest(SiteRadarStockManagement(
     #     "test_delete_site_stock"))
 
