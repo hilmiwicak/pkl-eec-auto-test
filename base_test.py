@@ -11,15 +11,15 @@ class BaseTest(unittest.TestCase):
         super().__init__(methodName)
 
     def setUp(self):
-        service_obj = Service(constant.DRIVER_PATH)
-        chrome_opt = Options()
-        chrome_opt.binary_location = constant.CHROME_PATH
-        chrome_opt.add_argument(constant.CHROME_DATA)
-        chrome_opt.add_argument("--ignore-gpu-blocklist")
-        chrome_opt.add_experimental_option(
+        chrome_service = Service(constant.DRIVER_PATH)
+        chrome_option = Options()
+        chrome_option.binary_location = constant.CHROME_PATH
+        chrome_option.add_argument(constant.CHROME_DATA)
+        chrome_option.add_argument("--ignore-gpu-blocklist")
+        chrome_option.add_experimental_option(
             'excludeSwitches', ['enable-logging'])
 
-        self.driver = webdriver.Chrome(options=chrome_opt, service=service_obj)
+        self.driver = webdriver.Chrome(options=chrome_option, service=chrome_service)
         self.driver.implicitly_wait(5)
         self.maxDiff = None
 

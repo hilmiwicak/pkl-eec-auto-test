@@ -19,3 +19,14 @@ class LoginPage(BasePage):
             self.By.CSS_SELECTOR, "a.dropdown-item[href='" +
             self.constant.BASE_URL + "/logout']"
         ).click()
+
+    def get_message_login_error(self):
+        try:
+            message_el = self.driver.find_element(
+                self.By.XPATH,
+                "//*[@id='email-error']/strong"
+            )
+            message_el.location_once_scrolled_into_view
+            return message_el.text
+        except self.NoSuchElementException:
+            return ""

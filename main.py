@@ -1,5 +1,4 @@
 import unittest
-import sys
 
 from selenium.webdriver.common.by import By
 
@@ -9,24 +8,25 @@ from pages import *
 import util
 
 
-def ignore_warning():
-    if not sys.warnoptions:
-        import warnings
-        warnings.simplefilter("ignore")
-
-
 class AuthenticationLogin(BaseTest):
 
     def test_login(self):
         login_page = LoginPage(self.driver)
 
-        # with self.subTest("invalid email and password"):
+        # with self.subTest("1. email and password valid, but not with correct credentials"):
         #     login_page.login("wrong_email@email.com", "wrong password")
         #
-        #     message = self.driver.find_element("email-error").text
+        #     message = login_page.get_message_login_error()
         #     self.assertEqual(message, "These credentials do not match our records.")
+        #
+        # with self.subTest("2. email valid, password valid but not regular string"):
+        #     login_page.login("admin1@eecid.com", " ©ƕǿȜ-? ")
+        #
+        #     cur_url = self.driver.current_url
+        #     self.assertEqual(cur_url, constant.BASE_URL + "/home")
 
-        with self.subTest("valid email and password"):
+        # because how it designed to run, i ran 3 without without 1 and 2
+        with self.subTest("3. valid email and password"):
             login_page.login(constant.EMAIL, constant.PASSWORD)
 
             cur_url = self.driver.current_url
@@ -46,6 +46,23 @@ class AuthenticationLogout(BaseTest):
         self.driver.delete_cookie("eecid_session")
         self.driver.delete_cookie("XSRF-TOKEN")
         self.driver.quit()
+
+
+class AccountManagement(BaseTest):
+
+    def test_verify_account(self):
+        account_page = AccountPage(self.driver)
+        account_page.verify_account()
+
+        message = account_page.get_message()
+        self.assertEqual(message, "User Approved")
+
+    def test_delete_account(self):
+        account_page = AccountPage(self.driver)
+        account_page.delete_account()
+
+        message = account_page.get_message()
+        self.assertEqual(message, "Data Deleted!")
 
 
 class PasswordEdit(BaseTest):
@@ -108,23 +125,6 @@ class PasswordEdit(BaseTest):
 
             message = profile_page.get_message()
             self.assertEqual(message, "Password has succesfully changed!")
-
-
-class AccountManagement(BaseTest):
-
-    def test_verify_account(self):
-        account_page = AccountPage(self.driver)
-        account_page.verify_account()
-
-        message = account_page.get_message()
-        self.assertEqual(message, "User Approved")
-
-    def test_delete_account(self):
-        account_page = AccountPage(self.driver)
-        account_page.delete_account()
-
-        message = account_page.get_message()
-        self.assertEqual(message, "Data Deleted!")
 
 
 class MaintenanceManagement(BaseTest):
@@ -881,10 +881,10 @@ def suite():
     suite = unittest.TestSuite()
     suite.addTest(AuthenticationLogin("test_login"))
 
-    # suite.addTest(PasswordEdit("test_edit_password"))
-
     # suite.addTest(AccountManagement("test_verify_account"))
     # suite.addTest(AccountManagement("test_delete_account"))
+
+    suite.addTest(PasswordEdit("test_edit_password"))
 
     # suite.addTest(MaintenanceManagement("test_view_pm"))
     # suite.addTest(MaintenanceManagement("test_view_cm"))
@@ -897,7 +897,7 @@ def suite():
     # suite.addTest(ExpertManagement("test_delete_expert"))
 
     # suite.addTest(SiteRadarManagement("test_view_site"))
-    suite.addTest(SiteRadarManagement("test_add_site"))
+    # suite.addTest(SiteRadarManagement("test_add_site"))
     # suite.addTest(SiteRadarManagement("test_delete_site"))
 
     # suite.addTest(DistributionManagement("test_view_distribution"))
